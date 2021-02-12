@@ -1,23 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Container } from "@material-ui/core";
+import Header from "./components/Header/Header";
+import Inputs from "./components/Inputs/Inputs";
+import Definitions from "./components/Definitions/Definitions";
 
 function App() {
+  const [meanings, setMeanings] = useState([]);
+  const [word, setWord] = useState("");
+  const [language, setLanguage] = useState("en_US");
+  const [poSpeech, setpoSpeech] = useState("noun");
+  const demoApi = async () => {
+    try {
+      const respone = await axios.get(
+        `https://api.dictionaryapi.dev/api/v2/entries/${language}/${word}`
+      );
+
+      setMeanings(respone.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    demoApi();
+  }, [language, word]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      className="App"
+      style={{
+        height: "100vh",
+        backgroundColor: "white",
+        color: "whitesmoke",
+      }}
+    >
+      <Container
+        maxWidth="lg"
+        style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+      >
+        <Header />
+        <center>
+          <Inputs
+            language={language}
+            setLanguage={setLanguage}
+            poSpeech={poSpeech}
+            setpoSpeech={setpoSpeech}
+            word={word}
+            setWord={setWord}
+          />
+        </center>
+        <Definitions
+          language={language}
+          poSpeech={setpoSpeech}
+          word={word}
+          meanings={meanings}
+        />
+      </Container>
     </div>
   );
 }
