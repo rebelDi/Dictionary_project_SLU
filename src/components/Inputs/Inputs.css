@@ -1,0 +1,39 @@
+.inputs {
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 2%;
+    height: 3vh;
+    width: 90%;
+    align-content: center;
+}  
+  
+.search_field {
+  background-color: rgb(241, 239, 241);
+  width: 50%;
+}
+
+.find_button {
+  background-image: url('./search_icon.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  
+  align-self: center;
+  margin-left: 5pt;
+  margin-top: 5pt;
+  height: 26pt;
+  width: 25pt;
+}
+
+.part_of_speech_field {
+  margin-left: 5pt;
+  background-color: rgb(225, 247, 220);
+  width: 30%;
+}
+
+.language_select {
+  width: 30%;
+  margin-left: 5px;
+  background-color: rgb(225, 247, 220);
+}
+
