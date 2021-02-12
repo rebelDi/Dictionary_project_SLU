@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/Dictionary_project_SLU/static/css/main.f1127b3b.chunk.css",
+    "main.js": "/Dictionary_project_SLU/static/js/main.832c7daf.chunk.js",
+    "main.js.map": "/Dictionary_project_SLU/static/js/main.832c7daf.chunk.js.map",
+    "runtime-main.js": "/Dictionary_project_SLU/static/js/runtime-main.cd98f8d7.js",
+    "runtime-main.js.map": "/Dictionary_project_SLU/static/js/runtime-main.cd98f8d7.js.map",
+    "static/js/2.ea848eec.chunk.js": "/Dictionary_project_SLU/static/js/2.ea848eec.chunk.js",
+    "static/js/2.ea848eec.chunk.js.map": "/Dictionary_project_SLU/static/js/2.ea848eec.chunk.js.map",
+    "static/js/3.4c0f998b.chunk.js": "/Dictionary_project_SLU/static/js/3.4c0f998b.chunk.js",
+    "static/js/3.4c0f998b.chunk.js.map": "/Dictionary_project_SLU/static/js/3.4c0f998b.chunk.js.map",
+    "index.html": "/Dictionary_project_SLU/index.html",
+    "static/css/main.f1127b3b.chunk.css.map": "/Dictionary_project_SLU/static/css/main.f1127b3b.chunk.css.map",
+    "static/js/2.ea848eec.chunk.js.LICENSE.txt": "/Dictionary_project_SLU/static/js/2.ea848eec.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/Dictionary_project_SLU/static/media/background-image.c1df886c.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.cd98f8d7.js",
+    "static/js/2.ea848eec.chunk.js",
+    "static/css/main.f1127b3b.chunk.css",
+    "static/js/main.832c7daf.chunk.js"
+  ]
+}
