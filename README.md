@@ -6,7 +6,7 @@
   1. Open cmd/ Git Bash
   2. Go to the directory of the local repository on your device
   3. Enter 
-### npm start
+### `npm start`
   4. It should open the local web page in your default browser (it is dynamic, so everytime you make a change you do not need to restart it, you make a change in code, it makes a change in web page)
     If not: open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
@@ -16,15 +16,15 @@
   1. Open Git Bash
   2. Go to the directory of the local repository on your device
   3. Enter 
-### npm install gh-pages --save-dev
+### `npm install gh-pages --save-dev`
   4. Enter 
-### npm run deploy
+### `npm run deploy`
   5. Enter 
-### git add .
+### `git add .`
   6. Enter 
-### git commit -m "[your commentary]"
+### `git commit -m "[your commentary]"`
   7. Enter
-### git push origin master
+### `git push origin master`
 
 ## To make the web page visible globally via GitHub Pages for the Your Branch:
   1. Open Git Bash
@@ -40,15 +40,15 @@
 }    
 ```
   5. Enter 
-### npm install gh-pages --save-dev
+### `npm install gh-pages --save-dev`
   6. Enter 
-### npm run deploy
+### `npm run deploy`
   7. Enter 
-### git add .
+### `git add .`
   8. Enter 
-### git commit -m "[your commentary]"
+### `git commit -m "[your commentary]"`
   9. Enter
-### git push origin [your branch]
+### `git push origin [your branch]`
   10. Contact the creator of GitHub repository to change the settings to your branch
   
 
