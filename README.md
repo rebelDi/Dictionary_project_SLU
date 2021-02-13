@@ -1,19 +1,58 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
+**This application is build using ReactJS, in order for it to work on your device make sure you have NodeJS**
+  Use this [link](https://nodejs.org/en/download/) to install NodeJS
+  Use this [link](https://reactjs.org/) to install all the needed modules and create a React Application to see if eveerything works
+  
+## To run the application:
+  1. Open cmd/ Git Bash
+  2. Go to the directory of the local repository on your device
+  3. Enter 
 ### `npm start`
+  4. It should open the local web page in your default browser (it is dynamic, so everytime you make a change you do not need to restart it, you make a change in code, it makes a change in web page)
+    If not: open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**DO NOT MERGE YOUR BRANCH WITH THE MASTER BRANCH WITHOUT CHECKING IF YOUR BRANCH WORKS AND DISCUSSING IT WITH THE GROUP **
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## To make the web page visible globally via GitHub Pages for the Master Branch:
+  1. Open Git Bash
+  2. Go to the directory of the local repository on your device
+  3. Enter 
+### `npm install gh-pages --save-dev`
+  4. Enter 
+### `npm run deploy`
+  5. Enter 
+### `git add .`
+  6. Enter 
+### `git commit -m "[your commentary]"`
+  7. Enter
+### `git push origin master`
 
+## To make the web page visible globally via GitHub Pages for the Your Branch:
+  1. Open Git Bash
+  2. Go to the directory of the local repository on your device
+  3. Choose your branch
+  4. Change 'master' in *package.json* to the *name of your branch* in 
+``` 
+...
+"scripts": {
+    ...
+    "deploy": "gh-pages -b master -d build",
+    ...
+}    
+```
+  5. Enter 
+### `npm install gh-pages --save-dev`
+  6. Enter 
+### `npm run deploy`
+  7. Enter 
+### `git add .`
+  8. Enter 
+### `git commit -m "[your commentary]"`
+  9. Enter
+### `git push origin [your branch]`
+  10. Contact the creator of GitHub repository to change the settings to your branch
+  
+
+**Other commands**
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
