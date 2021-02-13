@@ -10,7 +10,7 @@
   4. It should open the local web page in your default browser (it is dynamic, so everytime you make a change you do not need to restart it, you make a change in code, it makes a change in web page)
     If not: open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-**DO NOT MERGE YOUR BRANCH WITH THE MASTER BRANCH WITHOUT CHECKING IF YOUR BRANCH WORKS AND DISCUSSING IT WITH THE GROUP **
+**DO NOT MERGE YOUR BRANCH WITH THE MASTER BRANCH WITHOUT CHECKING IF YOUR BRANCH WORKS AND DISCUSSING IT WITH THE GROUP**
 
 ## To make the web page visible globally via GitHub Pages for the Master Branch:
   1. Open Git Bash
