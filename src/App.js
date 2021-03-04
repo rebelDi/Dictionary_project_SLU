@@ -10,22 +10,9 @@ function App() {
   const [meanings, setMeanings] = useState([]);
   const [word, setWord] = useState("");
   const [language, setLanguage] = useState("en_US");
-  const [poSpeech, setpoSpeech] = useState("noun");
-  const demoApi = async () => {
-    try {
-      const respone = await axios.get(
-        `https://api.dictionaryapi.dev/api/v2/entries/${language}/${word}`
-      );
+  const [partOfSpeech, setPartOfSpeech] = useState("noun");
 
-      setMeanings(respone.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    demoApi();
-  }, [language, word]);
+  useEffect(() => {}, []);
 
   return (
     <div
@@ -45,15 +32,17 @@ function App() {
           <Inputs
             language={language}
             setLanguage={setLanguage}
-            poSpeech={poSpeech}
-            setpoSpeech={setpoSpeech}
+            partOfSpeech={partOfSpeech}
+            setPartOfSpeech={setPartOfSpeech}
             word={word}
             setWord={setWord}
+            setMeanings={setMeanings}
+            meanings={meanings}
           />
         </center>
         <Definitions
           language={language}
-          poSpeech={setpoSpeech}
+          partOfSpeech={partOfSpeech}
           word={word}
           meanings={meanings}
         />

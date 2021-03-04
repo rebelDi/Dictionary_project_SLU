@@ -1,10 +1,27 @@
 import React from "react";
-import { TextField, MenuItem, ThemeProvider, Button } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  ThemeProvider,
+  Button,
+  IconButton,
+} from "@material-ui/core";
+import { Alarm, FindInPage, Search } from "@material-ui/icons";
 import "./Inputs.css";
 import languages from "../../data/languages";
-import poSpeech from "../../data/poSpeech";
+import poSpeech from "../../data/partofspeech";
+import apiCall from "../../ApiCall";
 
-const Inputs = ({ language, setLanguage, poSp, setpoSpeech, word, setWord}) => {
+const Inputs = ({
+  language,
+  setLanguage,
+  partOfSpeech,
+  setPartOfSpeech,
+  word,
+  setWord,
+  setMeanings,
+  meanings,
+}) => {
   return (
     <div classname="inputs">
       <br />
@@ -15,15 +32,22 @@ const Inputs = ({ language, setLanguage, poSp, setpoSpeech, word, setWord}) => {
         label="Search a Word"
         onChange={(e) => setWord(e.target.value)}
       />
-      <Button class="find_button" />
+      <IconButton color="primary" aria-label="add an alarm">
+        <Search
+          onClick={(e) => {
+            apiCall(language, word, setMeanings);
+          }}
+        />
+      </IconButton>
+    
 
       <br />
       <br />
       <TextField
         select
         label="Part of Speech"
-        value={poSp}
-        onChange={(e) => setpoSpeech(e.target.value)}
+        value={partOfSpeech}
+        onChange={(e) => setPartOfSpeech(e.target.value)}
         className="part_of_speech_field"
       >
         {poSpeech.map((item) => (
@@ -32,7 +56,7 @@ const Inputs = ({ language, setLanguage, poSp, setpoSpeech, word, setWord}) => {
           </MenuItem>
         ))}
       </TextField>
-         
+
       <TextField
         select
         label="Language"
@@ -46,8 +70,6 @@ const Inputs = ({ language, setLanguage, poSp, setpoSpeech, word, setWord}) => {
           </MenuItem>
         ))}
       </TextField>
-
-      
     </div>
   );
 };
