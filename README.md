@@ -17,6 +17,10 @@
   2. Go to the directory of the local repository on your device
   3. Enter 
 ### `npm install gh-pages --save-dev`
+
+**Side note: if you get Error 126 when doing `npm start` enter 
+### `chmod +x ./node_modules/.bin/react-scripts`
+
   4. Enter 
 ### `npm run deploy`
   5. Enter 
