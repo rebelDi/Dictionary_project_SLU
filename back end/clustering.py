@@ -32,6 +32,7 @@ import pandas as pd
 import seaborn as sns
 import pickle
 from scipy import spatial
+from sklearn.cluster import KMeans
 
 # Download tokenizers
 # nltk.download("punkt") # pretrained tokenizer
@@ -62,11 +63,9 @@ downsampling = 1e-3
 # determenistic, good for debugging
 seed = 1
 
-def get_sentences_from_txt_files():
+def get_corpus_from_txt_files():
     # get the book names, matching txt file
     book_filenames = sorted(glob.glob("test_data/*.txt"))
-    # print("Found books:")
-    # print(book_filenames)
 
     # add all the books to one corpus
     #initialize rawunicode
@@ -82,28 +81,29 @@ def get_sentences_from_txt_files():
         print()
     return corpus_raw
 
+def get_sentences_from_corpus(corpus):
+    # tokenization! saved the trained model here
+    # it's a pretrained model, turns words into tokens, we need tokens-sentences
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
+    # tokenize into sentences
+    raw_sentences = tokenizer.tokenize(corpus) # make it array with separate sentences
+    return raw_sentences
+
 #convert into list of words
-#remove unecessary characters, split into words, no hyhens and shit
+#remove unecessary characters, split into words, no hyhens
 #split into words
 def sentence_to_wordlist(raw):
     clean = re.sub("[^a-zA-Z]"," ", raw)
     words = clean.split()
     return words
 
-def make_array_of_words_from_sentences(corpus_raw):
-    # tokenization! saved the trained model here
-    # it's a pretrained model, turns words into tokens, we need tokens-sentences
-    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-
-    # tokenize into sentences
-    raw_sentences = tokenizer.tokenize(corpus_raw) # make it array with separate sentences
-
-
+def make_array_of_words_from_sentences(sentences):
     # for each sentece, sentences where each word is a separate element
     words = []
-    for raw_sentence in raw_sentences:
-        if len(raw_sentence) > 0:       
-            words.append(sentence_to_wordlist(raw_sentence))
+    for sentence in sentences:
+        if len(sentence) > 0:       
+            words.append(sentence_to_wordlist(sentence))
     # sentences are array of arrays (where the elements are words from sentences)
 
     # print an example
@@ -115,6 +115,19 @@ def make_array_of_words_from_sentences(corpus_raw):
     # print("The book corpus contains {0:,} tokens".format(token_count))
     return words
 
+def get_only_sentences_with_word(word, sentences):
+    # words = []
+    sentences_with_word = []
+    for sentence in sentences:
+        if len(sentence) > 0:
+            # words.append(sentence_to_wordlist(sentence))
+            words_in_sentences = sentence_to_wordlist(sentence)
+            
+            for word_in_sentence in words_in_sentences:
+                if word_in_sentence == word:
+                    sentences_with_word.append(sentence)
+                    break
+    return sentences_with_word
 
 def build_vocabulary(sentences):
     #model (will be the vectors for all the words)
@@ -179,23 +192,53 @@ def make_vectors_2D(thrones2vec):
 
     return all_word_vectors_matrix_2d
 
+def get_average_vector_of_sentence(sentences_with_word, vectors2D, vocabulary_model):
+    average_vector = []
+    for sentence in sentences_with_word:
+        vectors = []
 
-def find_cosine_simmilarity(vector1, vector2):
-    # vector1 = all_word_vectors_matrix_2d[thrones2vec.wv.vocab["queen"].index]
-    # vector2 = all_word_vectors_matrix_2d[thrones2vec.wv.vocab["king"].index]
-    print(1 - spatial.distance.cosine(vector1, vector2))
+        words = sentence_to_wordlist(sentence)
+        for word in words:
+            try:
+                vectors.append(vectors2D[vocabulary_model.wv.vocab[word].index])
+            except KeyError:
+                print(word + " is not in vocabulary")
+        average_vector.append(np.asarray(vectors).mean(axis=0))     # to take the mean of each column
+    
+    # print(sentence_and_average) 
+    return average_vector
 
-corpus = get_sentences_from_txt_files()
-words = make_array_of_words_from_sentences(corpus)
-print(words)
-# here we can save the model or load the existing one
-# thrones2vec = build_vocabulary(words) # get the trained model
-# save_model_to_file(thrones2vec)
+def get_clusters(number_of_clusters, sentences_with_word, average_vector):
+    X = np.array(average_vector)
+    kmeans = KMeans(n_clusters = number_of_clusters, random_state = 0).fit(X)
+    
+    # form examples of the word
+    examples = []
+    for i in range(number_of_clusters):
+        examples.append([])
+
+    for index, sentence in enumerate(sentences_with_word):
+        cluster_number = kmeans.predict(np.array([average_vector[index]]))[0]
+        examples[cluster_number].append(sentence)
+
+    for example in examples:
+        print(example)
+        print("============================================")
+
+corpus = get_corpus_from_txt_files()
+sentences = get_sentences_from_corpus(corpus)
+words = make_array_of_words_from_sentences(sentences)
+
+# # here we can save the model or load the existing one
+# # thrones2vec = build_vocabulary(words) # get the trained model
+# # save_model_to_file(thrones2vec)
 throne2vec = load_model_from_file()
-make_vectors_2D(throne2vec)
+all_word_vectors_matrix_2d = make_vectors_2D(throne2vec)
 
-# print(len(thrones2vec.wv.get_vector("king")))
-# print(len(thrones2vec.wv.get_vector("queen")))
-# print(len(thrones2vec.wv.get_vector("sword")))
+word = "bank"
+sentences_with_word = get_only_sentences_with_word(word, sentences)
 
+average_vector = get_average_vector_of_sentence(sentences_with_word, all_word_vectors_matrix_2d, throne2vec)
 
+number_of_clusters = 2
+get_clusters(number_of_clusters, sentences_with_word, average_vector)
