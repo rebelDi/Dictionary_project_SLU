@@ -100,10 +100,10 @@ def make_array_of_words_from_sentences(corpus_raw):
 
 
     # for each sentece, sentences where each word is a separate element
-    sentences = []
+    words = []
     for raw_sentence in raw_sentences:
         if len(raw_sentence) > 0:       
-            sentences.append(sentence_to_wordlist(raw_sentence))
+            words.append(sentence_to_wordlist(raw_sentence))
     # sentences are array of arrays (where the elements are words from sentences)
 
     # print an example
@@ -113,7 +113,7 @@ def make_array_of_words_from_sentences(corpus_raw):
     # count tokens (words), each one being a sentence
     # token_count = sum([len(sentence) for sentence in sentences])
     # print("The book corpus contains {0:,} tokens".format(token_count))
-    return sentences
+    return words
 
 
 def build_vocabulary(sentences):
@@ -186,10 +186,10 @@ def find_cosine_simmilarity(vector1, vector2):
     print(1 - spatial.distance.cosine(vector1, vector2))
 
 corpus = get_sentences_from_txt_files()
-sentences = make_array_of_words_from_sentences(corpus)
-
+words = make_array_of_words_from_sentences(corpus)
+print(words)
 # here we can save the model or load the existing one
-# thrones2vec = build_vocabulary(sentences) # get the trained model
+# thrones2vec = build_vocabulary(words) # get the trained model
 # save_model_to_file(thrones2vec)
 throne2vec = load_model_from_file()
 make_vectors_2D(throne2vec)
