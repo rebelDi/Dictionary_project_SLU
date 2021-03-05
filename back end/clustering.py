@@ -38,6 +38,10 @@ from sklearn.cluster import KMeans
 # nltk.download("punkt") # pretrained tokenizer
 # nltk.download("stopwords") # remove words like and, the, an, a, of
 
+word = "bank"
+part_of_speech = "Noun"
+language = "English"
+
 # building model 
 # Dimensionality of the resulting word vectors.
 #more dimensions mean more traiig them, but more generalized
@@ -63,28 +67,65 @@ downsampling = 1e-3
 # determenistic, good for debugging
 seed = 1
 
-def get_corpus_from_txt_files():
-    # get the book names, matching txt file
-    book_filenames = sorted(glob.glob("test_data/*.txt"))
+def get_regex():
+    global language
+    regular_expression = {
+        "English": "[^a-zA-Z]",
+        "Turkish": "[^a-zA-Z0-9ğüşöçİĞÜŞÖÇ]",
+        "Chinese": "[^a-zA-Z]",
+        "Hindi": "[^a-zA-Z]",
+        "Ukrainian" : "[^а-яА-Я]",
+        "Russian": "[^а-яА-Я]"
+    }
 
-    # add all the books to one corpus
+    return regular_expression.get(language)
+
+def get_part_of_speech_tag(part_of_speech):
+    tag = {
+        "NN" : "Noun",
+        "NNS " : "Noun",
+        "NNP " : "Noun",
+        "NNPS " : "Noun",
+        "VB": "Verb",
+        "VBD": "Verb",
+        "VBG": "Verb",
+        "VBN": "Verb",
+        "VBP": "Verb",
+        "VBZ": "Verb",
+        "JJ": "Adjective",
+        "JJR": "Adjective",
+        "JJS": "Adjective",
+        "RB": "Adverb",
+        "RBR": "Adverb",
+        "RBS": "Adverb"
+    }
+
+    return tag.get(part_of_speech)
+
+
+
+def get_corpus_from_txt_files():
+    # get the file names, matching txt file
+    filenames = sorted(glob.glob("test_data/*.txt"))
+
+    # add all the files to one corpus
     #initialize rawunicode
     # add all text to one big file in memory
     corpus_raw = u"" # a bit variable 
-    #for each book, read it, open it un utf 8 format, 
+    #for each file, read it, open it un utf 8 format, 
     #add it to the raw corpus
-    for book_filename in book_filenames:
-        # print("Reading '{0}'...".format(book_filename))
-        with codecs.open(book_filename, "r", "utf-8") as book_file:
-            corpus_raw += book_file.read()
+    for filename in filenames:
+        with codecs.open(filename, "r", "utf-8") as fileT:
+            corpus_raw += fileT.read()
         print("Corpus is now {0} characters long".format(len(corpus_raw)))
         print()
     return corpus_raw
 
 def get_sentences_from_corpus(corpus):
+    global language
     # tokenization! saved the trained model here
     # it's a pretrained model, turns words into tokens, we need tokens-sentences
-    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    tokenizer = nltk.data.load('tokenizers/punkt/' + language.lower() + '.pickle')
 
     # tokenize into sentences
     raw_sentences = tokenizer.tokenize(corpus) # make it array with separate sentences
@@ -94,7 +135,8 @@ def get_sentences_from_corpus(corpus):
 #remove unecessary characters, split into words, no hyhens
 #split into words
 def sentence_to_wordlist(raw):
-    clean = re.sub("[^a-zA-Z]"," ", raw)
+    global regular_expression
+    clean = re.sub(regular_expression," ", raw)
     words = clean.split()
     return words
 
@@ -106,28 +148,34 @@ def make_array_of_words_from_sentences(sentences):
             words.append(sentence_to_wordlist(sentence))
     # sentences are array of arrays (where the elements are words from sentences)
 
-    # print an example
-    # print(raw_sentences[5])
-    # print(sentence_to_wordlist(raw_sentences[5]))
-
     # count tokens (words), each one being a sentence
     # token_count = sum([len(sentence) for sentence in sentences])
-    # print("The book corpus contains {0:,} tokens".format(token_count))
+    # print("The corpus contains {0:,} tokens".format(token_count))
     return words
 
 def get_only_sentences_with_word(word, sentences):
-    # words = []
     sentences_with_word = []
     for sentence in sentences:
         if len(sentence) > 0:
-            # words.append(sentence_to_wordlist(sentence))
             words_in_sentences = sentence_to_wordlist(sentence)
             
             for word_in_sentence in words_in_sentences:
                 if word_in_sentence == word:
                     sentences_with_word.append(sentence)
                     break
+    # print(sentences_with_word)
     return sentences_with_word
+
+def get_sentences_with_part_of_speech(word, part_of_speech, sentences):
+    sentences_with_wordPOS = []
+    for sentence in sentences:
+        tags = nltk.pos_tag(nltk.word_tokenize(sentence))
+        for tag in tags:
+            if tag[0] == word and get_part_of_speech_tag(tag[1]) == part_of_speech:
+                sentences_with_wordPOS.append(sentence)
+                break
+        
+    return sentences_with_wordPOS
 
 def build_vocabulary(sentences):
     #model (will be the vectors for all the words)
@@ -147,48 +195,48 @@ def build_vocabulary(sentences):
     # total_examples=thrones2vec.corpus_count
 
     # train model on sentences
-    thrones2vec.train(sentences, total_examples=thrones2vec.corpus_count, epochs=thrones2vec.epochs)
+    thrones2vec.train(sentences, total_examples = thrones2vec.corpus_count, epochs = thrones2vec.epochs)
 
-    # save_model_to_file(thrones2vec) # optional
+    save_model_to_file(thrones2vec) # optional
 
     return thrones2vec
 
 def save_model_to_file(thrones2vec):
+    global language
     #save model
-    if not os.path.exists("trained"):
-        os.makedirs("trained")
+    if not os.path.exists("trained/" + language):
+        os.makedirs("trained/English/" + language)
 
-    thrones2vec.save(os.path.join("trained", "thrones2vec.w2v"))
+    thrones2vec.save(os.path.join("trained/" + language, "thrones2vec.w2v"))
     print("Model Saved to File")
 
 def load_model_from_file():
     # load model
-    thrones2vec = w2v.Word2Vec.load(os.path.join("trained", "thrones2vec.w2v"))
+    thrones2vec = w2v.Word2Vec.load(os.path.join("trained/" + language, "thrones2vec.w2v"))
     print("Word2Vec vocabulary length:", len(thrones2vec.wv.vocab))
     # print(thrones2vec.most_similar("king")[:10])
     return thrones2vec
 
 def make_vectors_2D(thrones2vec):
-    # Reduce dimensions of the vectors
-    # tsne = sklearn.manifold.TSNE(n_components=2, random_state=0)
+    global language
+    # # Reduce dimensions of the vectors
+    # tsne = sklearn.manifold.TSNE(n_components = 2, random_state = 0)
 
-    # We can load the trained t-SNE or train the new one
-    # Train t-SNE (takes a minute or two)
-
-    # put the vectors into a giant matrix
+    # # We can load the trained t-SNE or train the new one
+    # # Train t-SNE (takes a minute or two)
+    # # put the vectors into a giant matrix
     # all_word_vectors_matrix = thrones2vec.wv.syn0
     
-    # pickle.dump(all_word_vectors_matrix, open('trained/all_word_vectors_matrix', 'wb'))
-    all_word_vectors_matrix = pickle.load(open('trained/all_word_vectors_matrix', 'rb'))
+    # pickle.dump(all_word_vectors_matrix, open('trained/' + language + '/all_word_vectors_matrix', 'wb'))
+    
+    all_word_vectors_matrix = pickle.load(open('trained/' + language + '/all_word_vectors_matrix', 'rb'))
 
-    # print(all_word_vectors_matrix[0])
-
-    # we can save new tranformed matrix or load the existing one from file
-    # transorm matrix of vectors to 2d vectors
+    # # We can save new tranformed matrix or load the existing one from file
+    # # transorm matrix of vectors to 2d vectors
     # all_word_vectors_matrix_2d = tsne.fit_transform(all_word_vectors_matrix)
 
-    # pickle.dump(all_word_vectors_matrix_2d, open('trained/all_word_vectors_matrix_2d', 'wb'))
-    all_word_vectors_matrix_2d = pickle.load(open('trained/all_word_vectors_matrix_2d', 'rb'))
+    # pickle.dump(all_word_vectors_matrix_2d, open('trained/' + language + '/all_word_vectors_matrix_2d', 'wb'))
+    all_word_vectors_matrix_2d = pickle.load(open('trained/' + language + '/all_word_vectors_matrix_2d', 'rb'))
 
     return all_word_vectors_matrix_2d
 
@@ -221,24 +269,29 @@ def get_clusters(number_of_clusters, sentences_with_word, average_vector):
         cluster_number = kmeans.predict(np.array([average_vector[index]]))[0]
         examples[cluster_number].append(sentence)
 
-    for example in examples:
-        print(example)
-        print("============================================")
+    # for example in examples:
+    #     print(example)
+    #     print("============================================")
 
+
+regular_expression = get_regex()
 corpus = get_corpus_from_txt_files()
 sentences = get_sentences_from_corpus(corpus)
 words = make_array_of_words_from_sentences(sentences)
 
-# # here we can save the model or load the existing one
-# # thrones2vec = build_vocabulary(words) # get the trained model
-# # save_model_to_file(thrones2vec)
+# here we can save the model or load the existing one
+# thrones2vec = build_vocabulary(words) # get the trained model
 throne2vec = load_model_from_file()
 all_word_vectors_matrix_2d = make_vectors_2D(throne2vec)
 
-word = "bank"
+
 sentences_with_word = get_only_sentences_with_word(word, sentences)
+sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
+print(sentences_with_wordPOS)
+# average_vector = get_average_vector_of_sentence(sentences_with_word, all_word_vectors_matrix_2d, throne2vec)
 
-average_vector = get_average_vector_of_sentence(sentences_with_word, all_word_vectors_matrix_2d, throne2vec)
-
-number_of_clusters = 2
-get_clusters(number_of_clusters, sentences_with_word, average_vector)
+# number_of_clusters = 2
+# # here we get the examples of the senteces for the certain word 
+# # in form of [[cluster1 sentence1, cluster 1 sentence 2, ...], [cluster2 sentence1, cluster 2 sentence 2, ...],
+# # [cluster3 sentence1, cluster 3 sentence 2, ...]]
+# examples = get_clusters(number_of_clusters, sentences_with_word, average_vector)
