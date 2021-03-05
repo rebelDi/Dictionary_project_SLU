@@ -1,14 +1,14 @@
 import React from "react";
 import "./Definitions.css";
 
-const Definitions = (meanings, word, language, poSpeech,setpoSpeech) => {
+const Definitions = (meanings, word, language, partOfSpeech) => {
   console.log(meanings.meanings,word,language);
 
   return (
     <div className="meanings">
       {meanings.meanings.map((item) =>
         item.meanings.map((i) => {
-          if (i.partOfSpeech === 'noun')
+          if (i.partOfSpeech === meanings.partOfSpeech)
           return i.definitions.map((def) => (
             <div className="definition">
               <b> <span className="arrow">arrow</span>{def.definition}</b>
