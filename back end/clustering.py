@@ -41,6 +41,7 @@ from sklearn.cluster import KMeans
 word = "bank"
 part_of_speech = "Noun"
 language = "English"
+number_of_clusters = 2
 
 # building model 
 # Dimensionality of the resulting word vectors.
@@ -127,6 +128,7 @@ def get_sentences_from_corpus(corpus):
 
     # tokenize into sentences
     raw_sentences = tokenizer.tokenize(corpus) # make it array with separate sentences
+    save_element_into_file("sentences", raw_sentences)
     return raw_sentences
 
 #convert into list of words
@@ -151,7 +153,7 @@ def make_array_of_words_from_sentences(sentences):
     # print("The corpus contains {0:,} tokens".format(token_count))
     return words
 
-def get_only_sentences_with_word(word, sentences, all_word_vectors_matrix_2d):
+def get_only_sentences_with_word(word, sentences):
     sentences_with_word = []
     for sentence in sentences:
         if len(sentence) > 0:
@@ -165,6 +167,30 @@ def get_only_sentences_with_word(word, sentences, all_word_vectors_matrix_2d):
     return sentences_with_word
 
 def get_sentences_with_part_of_speech(word, part_of_speech, sentences):
+
+    # sentences_with_wordPOS = []
+    # for sentence in sentences:
+    #     flag = 0
+    #     if len(sentence) > 0:
+    #         tags = nltk.pos_tag(nltk.word_tokenize(sentence))
+    #         words_in_sentences = sentence_to_wordlist(sentence)
+    #         for word_in_sentence in words_in_sentences:
+    #             if word_in_sentence == word:
+    #                 # sentences_with_word.append(sentence)
+    #                 flag += 1
+    #                 break
+
+    #         for tag in tags:
+    #             if tag[0] == word and get_part_of_speech_tag(tag[1]) == part_of_speech:
+    #                 # sentences_with_wordPOS.append(sentence)
+    #                 flag += 1
+    #                 break
+
+    #         if flag == 2:
+    #             sentences_with_wordPOS.append(sentence)
+
+    # return sentences_with_wordPOS
+
     sentences_with_wordPOS = []
     for sentence in sentences:
         tags = nltk.pos_tag(nltk.word_tokenize(sentence))
@@ -214,26 +240,29 @@ def load_model_from_file():
     print("Word2Vec vocabulary length:", len(thrones2vec.wv.vocab))
     return thrones2vec
 
-def make_vectors_2D(thrones2vec):
+def save_element_into_file(filename, element):
     global language
-    # # # Reduce dimensions of the vectors
-    # tsne = sklearn.manifold.TSNE(n_components = 2, random_state = 0)
+    pickle.dump(element, open('trained/' + language + '/' + filename, 'wb'))
 
-    # # We can load the trained t-SNE or train the new one
-    # # Train t-SNE (takes a minute or two)
-    # # put the vectors into a giant matrix
-    # all_word_vectors_matrix = thrones2vec.wv.syn0
-    # 
-    # pickle.dump(all_word_vectors_matrix, open('trained/' + language + '/all_word_vectors_matrix', 'wb'))
+def load_elememt_from_file(filename):
+    global language
+    return pickle.load(open('trained/' + language + '/' + filename, 'rb'))
+
+def make_vectors_2D(thrones2vec):
+    # # Reduce dimensions of the vectors
+    tsne = sklearn.manifold.TSNE(n_components = 2, random_state = 0)
+
+    # We can load the trained t-SNE or train the new one
+    # Train t-SNE (takes a minute or two)
+    # put the vectors into a giant matrix
+    all_word_vectors_matrix = thrones2vec.wv.syn0
     
-    all_word_vectors_matrix = pickle.load(open('trained/' + language + '/all_word_vectors_matrix', 'rb'))
+    save_element_into_file("all_word_vectors_matrix", all_word_vectors_matrix)
 
-    # # We can save new tranformed matrix or load the existing one from file
-    # # transorm matrix of vectors to 2d vectors
-    # all_word_vectors_matrix_2d = tsne.fit_transform(all_word_vectors_matrix)
-
-    # pickle.dump(all_word_vectors_matrix_2d, open('trained/' + language + '/all_word_vectors_matrix_2d', 'wb'))
-    all_word_vectors_matrix_2d = pickle.load(open('trained/' + language + '/all_word_vectors_matrix_2d', 'rb'))
+    # We can save new tranformed matrix or load the existing one from file
+    # transorm matrix of vectors to 2d vectors
+    all_word_vectors_matrix_2d = tsne.fit_transform(all_word_vectors_matrix)
+    save_element_into_file("all_word_vectors_matrix_2d", all_word_vectors_matrix_2d)
 
     return all_word_vectors_matrix_2d
 
@@ -253,7 +282,8 @@ def get_average_vector_of_sentence(sentences_with_word, vectors2D, vocabulary_mo
     # print(sentence_and_average) 
     return average_vector
 
-def get_clusters(number_of_clusters, sentences_with_word, average_vector):
+def get_clusters(sentences_with_word, average_vector):
+    global number_of_clusters
     X = np.array(average_vector)
     kmeans = KMeans(n_clusters = number_of_clusters, random_state = 0).fit(X)
     
@@ -267,23 +297,63 @@ def get_clusters(number_of_clusters, sentences_with_word, average_vector):
         examples[cluster_number].append(sentence)
     return examples
 
+def define_parameters (input_word, input_language, input_part_of_speech, input_number_of_clusters):
+    global word, language, part_of_speech, regular_expression, number_of_clusters
+    word = input_word
+    language = input_language
+    part_of_speech = input_part_of_speech
+    regular_expression = get_regex()
+    number_of_clusters = input_number_of_clusters 
 
-regular_expression = get_regex()
-corpus = get_corpus_from_txt_files()
-sentences = get_sentences_from_corpus(corpus)
-words = make_array_of_words_from_sentences(sentences)
+def clustering(sentences, vectors):
+    global number_of_clusters
+    # here we get the examples of the senteces for the certain word 
+    # in form of [[cluster1 sentence1, cluster 1 sentence 2, ...], [cluster2 sentence1, cluster 2 sentence 2, ...],
+    # [cluster3 sentence1, cluster 3 sentence 2, ...]]
+    examples = get_clusters(sentences, vectors)
+    return examples
+    
+# Train new model for the corpus
+def configure_new_data (word, language, part_of_speech, number_of_clusters, sentences):
+    define_parameters(word, language, part_of_speech, number_of_clusters)
+    if sentences == 0:
+        corpus = get_corpus_from_txt_files()
+        sentences = get_sentences_from_corpus(corpus) # sentences are ['sentence1', 'sentence2', ...]
+    words = make_array_of_words_from_sentences(sentences)
+   
+    # here we can save the model or load the existing one
+    throne2vec = build_vocabulary(words) # get the trained model
+    all_word_vectors_matrix_2d = make_vectors_2D(throne2vec)
 
-# here we can save the model or load the existing one
-# thrones2vec = build_vocabulary(words) # get the trained model
-throne2vec = load_model_from_file()
-all_word_vectors_matrix_2d = make_vectors_2D(throne2vec)
+    sentences_with_word = get_only_sentences_with_word(word, sentences)
+    sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
+    if sentences_with_wordPOS == []:
+        return [['No sentences found']]
+    average_vector = get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
+
+    return clustering(sentences_with_wordPOS, average_vector)
+    
+    
+# Make computations based on old model from corpus
+def use_existing_data (word, language, part_of_speech, number_of_clusters, sentences):
+    define_parameters(word, language, part_of_speech, number_of_clusters)
+    if sentences == 0:
+        sentences = load_elememt_from_file("sentences")
+    
+    # here we can load the existing model
+    throne2vec = load_model_from_file()
+    all_word_vectors_matrix_2d = load_elememt_from_file("all_word_vectors_matrix_2d")
+
+    sentences_with_word = get_only_sentences_with_word(word, sentences)
+    sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
+    if sentences_with_wordPOS == []:
+        return [['No sentences found']]
+    average_vector = get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
+    
+    return clustering(sentences_with_wordPOS, average_vector)
 
 
-sentences_with_word = get_only_sentences_with_word(word, sentences, all_word_vectors_matrix_2d)
-sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
-average_vector = get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
-number_of_clusters = 2
-# here we get the examples of the senteces for the certain word 
-# in form of [[cluster1 sentence1, cluster 1 sentence 2, ...], [cluster2 sentence1, cluster 2 sentence 2, ...],
-# [cluster3 sentence1, cluster 3 sentence 2, ...]]
-examples = get_clusters(number_of_clusters, sentences_with_wordPOS, average_vector)
+# print(configure_new_data("sink", "English", "Noun", 2, 0))
+print(use_existing_data("bank", "English", "Noun", 2, 0))
+
+
