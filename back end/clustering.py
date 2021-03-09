@@ -68,6 +68,9 @@ downsampling = 1e-3
 # determenistic, good for debugging
 seed = 1
 
+# Function gets a regular expression by the language the user entered
+# regular expression is needed to process the sentences into words without reacting
+# to lower/upper case, numbers and different symbols like commas, hyhens, dots
 def get_regex():
     global language
     regular_expression = {
@@ -160,6 +163,7 @@ def get_only_sentences_with_word(word, sentences):
             words_in_sentences = sentence_to_wordlist(sentence)
             
             for word_in_sentence in words_in_sentences:
+                # print(word_in_sentence)
                 if word_in_sentence == word:
                     sentences_with_word.append(sentence)
                     break
@@ -167,30 +171,6 @@ def get_only_sentences_with_word(word, sentences):
     return sentences_with_word
 
 def get_sentences_with_part_of_speech(word, part_of_speech, sentences):
-
-    # sentences_with_wordPOS = []
-    # for sentence in sentences:
-    #     flag = 0
-    #     if len(sentence) > 0:
-    #         tags = nltk.pos_tag(nltk.word_tokenize(sentence))
-    #         words_in_sentences = sentence_to_wordlist(sentence)
-    #         for word_in_sentence in words_in_sentences:
-    #             if word_in_sentence == word:
-    #                 # sentences_with_word.append(sentence)
-    #                 flag += 1
-    #                 break
-
-    #         for tag in tags:
-    #             if tag[0] == word and get_part_of_speech_tag(tag[1]) == part_of_speech:
-    #                 # sentences_with_wordPOS.append(sentence)
-    #                 flag += 1
-    #                 break
-
-    #         if flag == 2:
-    #             sentences_with_wordPOS.append(sentence)
-
-    # return sentences_with_wordPOS
-
     sentences_with_wordPOS = []
     for sentence in sentences:
         tags = nltk.pos_tag(nltk.word_tokenize(sentence))
@@ -198,7 +178,6 @@ def get_sentences_with_part_of_speech(word, part_of_speech, sentences):
             if tag[0] == word and get_part_of_speech_tag(tag[1]) == part_of_speech:
                 sentences_with_wordPOS.append(sentence)
                 break
-        
     return sentences_with_wordPOS
 
 def build_vocabulary(sentences):
@@ -285,6 +264,7 @@ def get_average_vector_of_sentence(sentences_with_word, vectors2D, vocabulary_mo
 def get_clusters(sentences_with_word, average_vector):
     global number_of_clusters
     X = np.array(average_vector)
+    # print(sentences_with_word)
     kmeans = KMeans(n_clusters = number_of_clusters, random_state = 0).fit(X)
     
     # form examples of the word
@@ -310,6 +290,8 @@ def clustering(sentences, vectors):
     # here we get the examples of the senteces for the certain word 
     # in form of [[cluster1 sentence1, cluster 1 sentence 2, ...], [cluster2 sentence1, cluster 2 sentence 2, ...],
     # [cluster3 sentence1, cluster 3 sentence 2, ...]]
+    if (len(sentences) == 1):
+        return sentences
     examples = get_clusters(sentences, vectors)
     return examples
     
@@ -324,7 +306,6 @@ def configure_new_data (word, language, part_of_speech, number_of_clusters, sent
     # here we can save the model or load the existing one
     throne2vec = build_vocabulary(words) # get the trained model
     all_word_vectors_matrix_2d = make_vectors_2D(throne2vec)
-
     sentences_with_word = get_only_sentences_with_word(word, sentences)
     sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
@@ -342,9 +323,11 @@ def use_existing_data (word, language, part_of_speech, number_of_clusters, sente
     
     # here we can load the existing model
     throne2vec = load_model_from_file()
+    # print(throne2vec.wv.vocab)
     all_word_vectors_matrix_2d = load_elememt_from_file("all_word_vectors_matrix_2d")
 
     sentences_with_word = get_only_sentences_with_word(word, sentences)
+    # print(sentences)
     sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
         return [['No sentences found']]
@@ -354,6 +337,13 @@ def use_existing_data (word, language, part_of_speech, number_of_clusters, sente
 
 
 # print(configure_new_data("sink", "English", "Noun", 2, 0))
-print(use_existing_data("bank", "English", "Noun", 2, 0))
+# print(use_existing_data("sink", "English", "Noun", 2, 0))
 
+# print(configure_new_data("замок", "Russian", "Noun", 2, 0))
+# print(use_existing_data("она", "Russian", "Noun", 2, 0))
 
+# print(configure_new_data("вона", "Ukrainian", "Noun", 2, 0))
+# print(use_existing_data("вона", "Ukrainian", "Noun", 2, 0))
+
+# print(use_existing_data("hafif", "Turkish", "Noun", 2, 0))
+# print(use_existing_data("kal", "Turkish", "Noun", 2, 0))
