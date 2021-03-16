@@ -1,6 +1,7 @@
 # This file gets all the sentences from txt files with texts.
 # It then divides the text in sentences and sentences into words
- 
+# Then it finds the sentences with the word and filters them
+# according to part of speech. Then it does clustering of the meening.
 from __future__ import absolute_import, division, print_function
 import codecs
 #finds all pathnames matching a pattern, like regex
@@ -33,7 +34,11 @@ import seaborn as sns
 import pickle
 from scipy import spatial
 from sklearn.cluster import KMeans
+from pathlib import Path
+import sys
 
+# needed for getting the right path
+absolute_path = str(Path(os.getcwd()).parent) + "\\back end\\"
 # Download tokenizers
 # nltk.download("punkt") # pretrained tokenizer
 # nltk.download("stopwords") # remove words like and, the, an, a, of
@@ -109,7 +114,7 @@ def get_part_of_speech_tag(part_of_speech):
 def get_corpus_from_txt_files():
     global language
     # get the file names, matching txt file
-    filenames = sorted(glob.glob("test_data/" + language + "/*.txt"))
+    filenames = sorted(glob.glob(absolute_path + "test_data/" + language + "/*.txt"))
 
     # add all the files to one corpus
     #initialize rawunicode
@@ -207,25 +212,25 @@ def build_vocabulary(sentences):
 def save_model_to_file(thrones2vec):
     global language
     #save model
-    if not os.path.exists("trained/" + language):
-        os.makedirs("trained/English/" + language)
+    if not os.path.exists(absolute_path + "trained/" + language):
+        os.makedirs(absolute_path + "trained/English/" + language)
 
-    thrones2vec.save(os.path.join("trained/" + language, "thrones2vec.w2v"))
+    thrones2vec.save(os.path.join(absolute_path + "trained/" + language, "thrones2vec.w2v"))
     print("Model Saved to File")
 
 def load_model_from_file():
     # load model
-    thrones2vec = w2v.Word2Vec.load(os.path.join("trained/" + language, "thrones2vec.w2v"))
+    thrones2vec = w2v.Word2Vec.load(os.path.join(absolute_path + "trained/" + language, "thrones2vec.w2v"))
     print("Word2Vec vocabulary length:", len(thrones2vec.wv.vocab))
     return thrones2vec
 
 def save_element_into_file(filename, element):
     global language
-    pickle.dump(element, open('trained/' + language + '/' + filename, 'wb'))
+    pickle.dump(element, open(absolute_path + 'trained/' + language + '/' + filename, 'wb'))
 
 def load_elememt_from_file(filename):
     global language
-    return pickle.load(open('trained/' + language + '/' + filename, 'rb'))
+    return pickle.load(open(absolute_path + 'trained/' + language + '/' + filename, 'rb'))
 
 def make_vectors_2D(thrones2vec):
     # # Reduce dimensions of the vectors
