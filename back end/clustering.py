@@ -125,7 +125,7 @@ def get_corpus_from_txt_files():
     for filename in filenames:
         with codecs.open(filename, "r", "utf-8") as fileT:
             corpus_raw += fileT.read()
-        print("Corpus is now {0} characters long".format(len(corpus_raw)))
+        # print("Corpus is now {0} characters long".format(len(corpus_raw)))
     return corpus_raw
 
 def get_sentences_from_corpus(corpus):
@@ -216,12 +216,12 @@ def save_model_to_file(thrones2vec):
         os.makedirs(absolute_path + "trained/English/" + language)
 
     thrones2vec.save(os.path.join(absolute_path + "trained/" + language, "thrones2vec.w2v"))
-    print("Model Saved to File")
+    # print("Model Saved to File")
 
 def load_model_from_file():
     # load model
     thrones2vec = w2v.Word2Vec.load(os.path.join(absolute_path + "trained/" + language, "thrones2vec.w2v"))
-    print("Word2Vec vocabulary length:", len(thrones2vec.wv.vocab))
+    # print("Word2Vec vocabulary length:", len(thrones2vec.wv.vocab))
     return thrones2vec
 
 def save_element_into_file(filename, element):
@@ -260,7 +260,8 @@ def get_average_vector_of_sentence(sentences_with_word, vectors2D, vocabulary_mo
             try:
                 vectors.append(vectors2D[vocabulary_model.wv.vocab[word.lower()].index])
             except KeyError:
-                print(word + " is not in vocabulary")
+                # print(word + " is not in vocabulary")
+                error = 1
         average_vector.append(np.asarray(vectors).mean(axis=0))     # to take the mean of each column
     
     # print(sentence_and_average) 
@@ -352,3 +353,4 @@ def use_existing_data (word, language, part_of_speech, number_of_clusters, sente
 
 # print(use_existing_data("hafif", "Turkish", "Noun", 2, 0))
 # print(use_existing_data("kal", "Turkish", "Noun", 2, 0))
+print(use_existing_data(sys.argv[1], sys.argv[2], sys.argv[3], 2, 0))
