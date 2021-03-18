@@ -264,8 +264,6 @@ def get_average_vector_of_sentence(sentences_with_word, vectors2D, vocabulary_mo
                 # print(word + " is not in vocabulary")
                 error = 1
         average_vector.append(np.asarray(vectors).mean(axis=0))     # to take the mean of each column
-    
-    # print(sentence_and_average) 
     return average_vector
 
 def get_clusters(sentences_with_word, average_vector):
@@ -279,13 +277,9 @@ def get_clusters(sentences_with_word, average_vector):
     for i in range(number_of_clusters):
         examples.append([])
 
-
     for index, sentence in enumerate(sentences_with_word):
-        
-
         cluster_number = kmeans.predict(np.array([average_vector[index]]))[0]
-        examples[cluster_number].append(sentence)
-    
+        examples[cluster_number].append(sentence)    
 
     result = {}
     examples_json = {}
@@ -342,11 +336,9 @@ def use_existing_data (word, language, part_of_speech, number_of_clusters, sente
     
     # here we can load the existing model
     throne2vec = load_model_from_file()
-    # print(throne2vec.wv.vocab)
     all_word_vectors_matrix_2d = load_elememt_from_file("all_word_vectors_matrix_2d")
 
     sentences_with_word = get_only_sentences_with_word(word, sentences)
-    # print(sentences)
     sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
         return [['No sentences found']]
