@@ -36,9 +36,10 @@ from scipy import spatial
 from sklearn.cluster import KMeans
 from pathlib import Path
 import sys
+import json
 
 # needed for getting the right path
-absolute_path = str(Path(os.getcwd()).parent) + "\\back end\\"
+absolute_path = str(Path(os.getcwd()).parent) + "/back end/"
 # Download tokenizers
 # nltk.download("punkt") # pretrained tokenizer
 # nltk.download("stopwords") # remove words like and, the, an, a, of
@@ -125,7 +126,7 @@ def get_corpus_from_txt_files():
     for filename in filenames:
         with codecs.open(filename, "r", "utf-8") as fileT:
             corpus_raw += fileT.read()
-        print("Corpus is now {0} characters long".format(len(corpus_raw)))
+        # print("Corpus is now {0} characters long".format(len(corpus_raw)))
     return corpus_raw
 
 def get_sentences_from_corpus(corpus):
@@ -216,12 +217,12 @@ def save_model_to_file(thrones2vec):
         os.makedirs(absolute_path + "trained/English/" + language)
 
     thrones2vec.save(os.path.join(absolute_path + "trained/" + language, "thrones2vec.w2v"))
-    print("Model Saved to File")
+    # print("Model Saved to File")
 
 def load_model_from_file():
     # load model
     thrones2vec = w2v.Word2Vec.load(os.path.join(absolute_path + "trained/" + language, "thrones2vec.w2v"))
-    print("Word2Vec vocabulary length:", len(thrones2vec.wv.vocab))
+    # print("Word2Vec vocabulary length:", len(thrones2vec.wv.vocab))
     return thrones2vec
 
 def save_element_into_file(filename, element):
@@ -260,18 +261,17 @@ def get_average_vector_of_sentence(sentences_with_word, vectors2D, vocabulary_mo
             try:
                 vectors.append(vectors2D[vocabulary_model.wv.vocab[word.lower()].index])
             except KeyError:
-                print(word + " is not in vocabulary")
+                # print(word + " is not in vocabulary")
+                error = 1
         average_vector.append(np.asarray(vectors).mean(axis=0))     # to take the mean of each column
-    
-    # print(sentence_and_average) 
     return average_vector
 
 def get_clusters(sentences_with_word, average_vector):
     global number_of_clusters
     X = np.array(average_vector)
     # print(sentences_with_word)
-    kmeans = KMeans(n_clusters = number_of_clusters, random_state = 0).fit(X)
-    
+    kmeans = KMeans(n_clusters = number_of_clusters, random_state = 0).fit(X)   
+
     # form examples of the word
     examples = []
     for i in range(number_of_clusters):
@@ -279,8 +279,16 @@ def get_clusters(sentences_with_word, average_vector):
 
     for index, sentence in enumerate(sentences_with_word):
         cluster_number = kmeans.predict(np.array([average_vector[index]]))[0]
-        examples[cluster_number].append(sentence)
-    return examples
+        examples[cluster_number].append(sentence)    
+
+    result = {}
+    examples_json = {}
+    for i in range(number_of_clusters):
+        for j in range(len(examples[i])):
+            examples_json[str(j)] = examples[i][j]
+        result["meaning" + str(i)] = examples_json
+        examples_json = {}
+    return result
 
 def define_parameters (input_word, input_language, input_part_of_speech, input_number_of_clusters):
     global word, language, part_of_speech, regular_expression, number_of_clusters
@@ -328,11 +336,9 @@ def use_existing_data (word, language, part_of_speech, number_of_clusters, sente
     
     # here we can load the existing model
     throne2vec = load_model_from_file()
-    # print(throne2vec.wv.vocab)
     all_word_vectors_matrix_2d = load_elememt_from_file("all_word_vectors_matrix_2d")
 
     sentences_with_word = get_only_sentences_with_word(word, sentences)
-    # print(sentences)
     sentences_with_wordPOS = get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
         return [['No sentences found']]
@@ -352,3 +358,4 @@ def use_existing_data (word, language, part_of_speech, number_of_clusters, sente
 
 # print(use_existing_data("hafif", "Turkish", "Noun", 2, 0))
 # print(use_existing_data("kal", "Turkish", "Noun", 2, 0))
+print(use_existing_data(sys.argv[1], sys.argv[2], sys.argv[3], 2, 0))
