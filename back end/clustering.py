@@ -36,9 +36,10 @@ from scipy import spatial
 from sklearn.cluster import KMeans
 from pathlib import Path
 import sys
+import json
 
 # needed for getting the right path
-absolute_path = str(Path(os.getcwd()).parent) + "\\back end\\"
+absolute_path = str(Path(os.getcwd()).parent) + "/back end/"
 # Download tokenizers
 # nltk.download("punkt") # pretrained tokenizer
 # nltk.download("stopwords") # remove words like and, the, an, a, of
@@ -271,17 +272,29 @@ def get_clusters(sentences_with_word, average_vector):
     global number_of_clusters
     X = np.array(average_vector)
     # print(sentences_with_word)
-    kmeans = KMeans(n_clusters = number_of_clusters, random_state = 0).fit(X)
-    
+    kmeans = KMeans(n_clusters = number_of_clusters, random_state = 0).fit(X)   
+
     # form examples of the word
     examples = []
     for i in range(number_of_clusters):
         examples.append([])
 
+
     for index, sentence in enumerate(sentences_with_word):
+        
+
         cluster_number = kmeans.predict(np.array([average_vector[index]]))[0]
         examples[cluster_number].append(sentence)
-    return examples
+    
+
+    result = {}
+    examples_json = {}
+    for i in range(number_of_clusters):
+        for j in range(len(examples[i])):
+            examples_json[str(j)] = examples[i][j]
+        result["meaning" + str(i)] = examples_json
+        examples_json = {}
+    return result
 
 def define_parameters (input_word, input_language, input_part_of_speech, input_number_of_clusters):
     global word, language, part_of_speech, regular_expression, number_of_clusters
