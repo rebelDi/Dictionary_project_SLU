@@ -23,7 +23,7 @@ const Inputs = ({
   meanings,
 }) => {
   return (
-    <div classname="inputs">
+    <div className="inputs">
       <br />
       <TextField
         className="search_field"
@@ -35,11 +35,10 @@ const Inputs = ({
       <IconButton color="primary" aria-label="add an alarm">
         <Search
           onClick={(e) => {
-            apiCall(language, word, setMeanings);
+            apiCall(language, word, partOfSpeech, setMeanings);
           }}
         />
       </IconButton>
-    
 
       <br />
       <br />
