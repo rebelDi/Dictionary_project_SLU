@@ -7,6 +7,9 @@ import string
 from nltk.corpus import stopwords
 import spacy
 from nltk.tokenize import sent_tokenize
+from nltk.tokenize import word_tokenize
+
+
 
 
 
@@ -19,6 +22,10 @@ def sentences(list_):
 
     return sentence
 
+def words_tokenization(word):
+    text = ''.join(word)
+    word = word_tokenize(text)
+    return word
 
 def remove(text):
     """Returns text with all the filtering necessary"""
@@ -86,18 +93,34 @@ def main():
     print(sent_tokenized)
     # lemmatization
     t1 = [lemmatizer(sent) for sent in sent_tokenized]
+
     # Removing stop words
     t2 = [stop_word(sent) for sent in t1]
+
     # Removing all the unnecessary things from the text
     t3 = [remove(line) for line in t2]
+
     # Removing punctuations
     t4 =[pun(line.lower()) for line in t3]
 
+
     t5 = [extras(sent) for sent in t4]
 
+    words = words_tokenization(t5)
     print("Preprocessing done for file")
-
+    
     print(t5)
+    print(words)
 
-if __name__ == "__main__":
-    main()
+    """sentence_with_word = []
+    for sentence in sent_tokenized:
+        words_in_sentences = word_tokenize(sentence)
+
+        for word_in_sentence in words_in_sentences:
+            for word in words:
+                if word_in_sentence == word:
+                    sentence_with_word.append(sentence)
+    print(sentence_with_word)   """
+
+
+main()
