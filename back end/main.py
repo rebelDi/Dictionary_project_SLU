@@ -21,7 +21,9 @@ def use_sentence_from_db (word, language):
     # sentences = get_sentences_with_this_word_from_db(word, language)
     return sentences
 
-def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
+def main_use_txt_files(word, language, part_of_speech):
+    number_of_clusters = 2
+
     # here we choose if we are using db or txt files
     sentences = use_existing_data_from_txt(language)
     file_manager = File_Manager(language)
@@ -34,19 +36,25 @@ def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
     cluster = Cluster(language, number_of_clusters)
 
     sentences_with_word = vocabulary.get_only_sentences_with_word(word, sentences)
+    file_manager.save_element_to_file(sentences_with_word, "sentences_with_word")
+
     sentences_with_wordPOS = vocabulary.get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
         return [['No sentences found']]
     average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
     return cluster.clustering(sentences_with_wordPOS, average_vector)
 
-def main(word, language, part_of_speech, number_of_clusters):
+def main(word, language, part_of_speech):
+    number_of_clusters = 2
+
     sentences = []
     # sentences = load sentences with word from db
     vocabulary = Vocabulary(language)
     cluster = Cluster(language, number_of_clusters)
     file_manager = File_Manager(language)
     
+    file_manager.save_element_to_file(sentences, "sentences_with_word")
+
     # here we can load the existing model
     throne2vec = file_manager.load_element_from_file("thrones2vec")
     all_word_vectors_matrix_2d = file_manager.load_element_from_file("all_word_vectors_matrix_2d")
@@ -56,13 +64,13 @@ def main(word, language, part_of_speech, number_of_clusters):
         return [['No sentences found']]
     average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
     return cluster.clustering(sentences_with_wordPOS, average_vector)
-    
-# print(main("sink", "English", "Verb", 2))
-# print(main("water", "English", "Noun", 2))
-# print(main("замок", "Russian", "Noun", 2))
-# print(main("она", "Russian", "Noun", 2))
-# print(main("вона", "Ukrainian", "Noun", 2))
 
-# print(main("hafif", "Turkish", "Noun", 2))
-# print(main("kal", "Turkish", "Noun", 2))
-# print(main(sys.argv[1], sys.argv[2], sys.argv[3], 2))
+# print(main("sink", "English", "Verb"))
+# print(main("water", "English", "Noun"))
+# print(main("замок", "Russian", "Noun"))
+# print(main("она", "Russian", "Noun"))
+# print(main("вона", "Ukrainian", "Noun"))
+
+# print(main("hafif", "Turkish", "Noun"))
+# print(main("kal", "Turkish", "Noun"))
+# print(main(sys.argv[1], sys.argv[2], sys.argv[3]))
