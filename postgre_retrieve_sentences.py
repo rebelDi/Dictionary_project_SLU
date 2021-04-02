@@ -11,10 +11,12 @@ def main():
 
     con = psycopg2.connect(conn_string)
     curs = con.cursor()
-    a = 'crane'
+    a = 'recommend' #input the required word
     #executing the query for retrieval
     curs.execute(f"select sentence from english where word='{a}'")
     x= curs.fetchall()
     print(x)
+
+
 
 main() # function call
