@@ -101,6 +101,7 @@ def get_sentences_with_word(words, sentences):
 
         x = insert_sentences(word, sentences_with_word)#function call for inserting the sentences into db
         print("word:", word, "sentence:", sentences_with_word)
+        print(x)
         sentences_with_word  = []
 
 
