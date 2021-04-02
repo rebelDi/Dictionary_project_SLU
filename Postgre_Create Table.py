@@ -12,11 +12,11 @@ def main():
     curs = con.cursor()
 
     #executing queries for creating tables for different languages.
-    curs.execute('''CREATE TABLE ENGLISH(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NOT NULL)''')
-    curs.execute('''CREATE TABLE TURKISH(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NOT NULL)''')
-    curs.execute('''CREATE TABLE HINDI(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NOT NULL)''')
-    curs.execute('''CREATE TABLE RUSSIAN(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NOT NULL)''')
-    curs.execute('''CREATE TABLE UKRAINIAN(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NOT NULL)''')
+    curs.execute('''CREATE TABLE ENGLISH(word  TEXT , sentence TEXT  )''')
+    #curs.execute('''CREATE TABLE TURKISH(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NULL)''')
+    #curs.execute('''CREATE TABLE HINDI(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NULL)''')
+    #curs.execute('''CREATE TABLE RUSSIAN(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NULL)''')
+    #curs.execute('''CREATE TABLE UKRAINIAN(word  TEXT PRIMARY KEY NOT NULL, sentence TEXT  NULL)''')
 
     con.commit() # to commit all changes into the db
     print("Tables created successfully")
