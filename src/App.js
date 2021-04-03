@@ -9,8 +9,8 @@ import Definitions from "./components/Definitions/Definitions";
 function App() {
   const [meanings, setMeanings] = useState([]);
   const [word, setWord] = useState("");
-  const [language, setLanguage] = useState("en_US");
-  const [partOfSpeech, setPartOfSpeech] = useState("noun");
+  const [language, setLanguage] = useState("English");
+  const [partOfSpeech, setPartOfSpeech] = useState("Noun");
 
   useEffect(() => {}, []);
 
