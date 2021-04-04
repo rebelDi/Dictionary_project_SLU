@@ -74,7 +74,7 @@ def main(word, language, part_of_speech):
 # print(main("она", "Russian", "Noun"))
 # print(main("вона", "Ukrainian", "Noun"))
 
-print(main_use_txt_files("sink", "English", "Verb"))
+# print(main_use_txt_files("sink", "English", "Verb"))
 # print(main_use_txt_files("water", "English", "Noun"))
 # print(main_use_txt_files("замок", "Russian", "Noun"))
 # print(main_use_txt_files("она", "Russian", "Noun"))
