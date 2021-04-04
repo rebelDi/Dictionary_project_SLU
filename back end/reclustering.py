@@ -21,7 +21,7 @@ def main(word, language, part_of_speech, number_of_clusters):
 
     sentences_with_wordPOS = vocabulary.get_sentences_with_part_of_speech(word, part_of_speech, sentences)
     if sentences_with_wordPOS == []:
-        return [['No sentences found']]
+        return [{'meaning': '0', 'examples':["No sentences found"]}]
     cluster = Cluster(language, number_of_clusters)
     average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)   
 
