@@ -16,6 +16,8 @@ import numpy as np
 
 class Cluster:
 
+    NO_RESULT_OUTPUT = "No results"
+
     def __init__(self, language, number_of_clusters):
         self.language = language
         self.number_of_clusters = number_of_clusters
@@ -79,7 +81,12 @@ class Cluster:
         number_of_clusters = score.index(max(score))+2
         return number_of_clusters
 
+    def get_sententences_found_result(self, result = NO_RESULT_OUTPUT):
+        no_results_string = {"meanings": {"meaning": [{"id": 1, "examples": [{"id": 1, "example": result}]}]}}
+        return json.dumps(no_results_string)
+
     def get_clusters(self, sentences_with_word, average_vector):
+        print(sentences_with_word)
         # Check if we need to recalculate number of clusters to get default parameter
         if self.number_of_clusters == -1:
             self.number_of_clusters = self.calculate_number_of_clusters()
@@ -97,21 +104,34 @@ class Cluster:
             cluster_number = kmeans.predict(np.array([average_vector[index]]))[0]
             examples[cluster_number].append(sentence)    
 
-        result = []
-        examples_json = {}
-        for i in range(self.number_of_clusters):
-            examples_json["meaning"] = str(i)
-            examples_json["examples"] = examples[i]
-            result.append(examples_json)
-            examples_json = {}
+        # Form json output
+        result = {}
+        result_json = {}
+        result["meaning"] = []
 
-        return result
+        for i in range(self.number_of_clusters):
+            cluster = {}
+            cluster["id"] = i+1
+            examples_json = []
+            for k in range(0, len(examples[i])):
+                example = {}
+                example["id"] = k+1
+                example["example"] = examples[i][k]
+                examples_json.append(example)
+            cluster["examples"] = examples_json
+
+            result["meaning"].append(cluster)
+
+        result_json["meanings"] = result
+        result_json = json.dumps(result_json)
+      
+        return result_json
 
     def clustering(self, sentences, vectors):  
         # here we get the examples of the senteces for the certain word 
         # in form of [[cluster1 sentence1, cluster 1 sentence 2, ...], [cluster2 sentence1, cluster 2 sentence 2, ...],
         # [cluster3 sentence1, cluster 3 sentence 2, ...]]
         if (len(sentences) == 1):
-            return sentences
+            return self.get_sententences_found_result(sentences)
         examples = self.get_clusters(sentences, vectors)
         return examples

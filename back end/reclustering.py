@@ -13,6 +13,7 @@ from File_Manager import File_Manager
 def main(word, language, part_of_speech, number_of_clusters):
     file_manager = File_Manager(language)
     vocabulary = Vocabulary(language)
+    cluster = Cluster(language, number_of_clusters)
     sentences = file_manager.load_element_from_file("sentences_with_word")
     
     # here we can load the existing model
@@ -21,10 +22,9 @@ def main(word, language, part_of_speech, number_of_clusters):
 
     sentences_with_wordPOS = vocabulary.get_sentences_with_part_of_speech(word, part_of_speech, sentences)
     if sentences_with_wordPOS == []:
-        return [{'meaning': '0', 'examples':["No sentences found"]}]
-    cluster = Cluster(language, number_of_clusters)
+        return cluster.get_sententences_found_result()
+    
     average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)   
-
     return cluster.clustering(sentences_with_wordPOS, average_vector)
 
 # main("sink", "English", "Verb", 2)
