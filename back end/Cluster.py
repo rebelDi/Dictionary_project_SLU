@@ -83,10 +83,10 @@ class Cluster:
 
     def get_sententences_found_result(self, result = NO_RESULT_OUTPUT):
         no_results_string = {"meanings": {"meaning": [{"id": 1, "examples": [{"id": 1, "example": result}]}]}}
-        return json.dumps(no_results_string)
+        return [no_results_string]
 
     def get_clusters(self, sentences_with_word, average_vector):
-        print(sentences_with_word)
+        # print(sentences_with_word)
         # Check if we need to recalculate number of clusters to get default parameter
         if self.number_of_clusters == -1:
             self.number_of_clusters = self.calculate_number_of_clusters()
@@ -123,7 +123,7 @@ class Cluster:
             result["meaning"].append(cluster)
 
         result_json["meanings"] = result
-        result_json = json.dumps(result_json)
+        result_json = [result_json]
       
         return result_json
 
