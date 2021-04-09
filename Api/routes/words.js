@@ -8,29 +8,6 @@ router.get("/", (req, res) => {
   res.send("Get posts");
 });
 
-// router.get("/:word/:language/:partofspeech/:numberofcluster", (req, res) => {
-//   const word = new Words({
-//     word: req.params.word,
-//     language: req.params.language,
-//     partOfSpeech: req.params.partofspeech,
-//     numberOfCluster: req.params.numberofcluster,
-//   });
-
-//   // let options = {
-//   //   mode: "text",
-//   //   pythonOptions: ["-u"], // get print results in real-time
-//   //   scriptPath: "../back end",
-//   //   args: [word.word, word.language, word.partOfSpeech,word.numberOfCluster],
-//   // };
-
-//   // PythonShell.run("clustering.py", options, function (err, results) {
-//   //   if (err) throw err;
-//   //   // results is an array consisting of messages collected during execution
-//   //   console.log("results: %j", results);
-
-//   res.json(word);
-// });
-
 router.get(
   "/:word/:language/:partofspeech/:numberofcluster",
   async (req, res) => {
@@ -47,10 +24,11 @@ router.get(
         ],
       };
 
-      PythonShell.run("clustering.py", options, function (err, results) {
+      PythonShell.run("main.py", options, function (err, results) {
         if (err) throw err;
-        // results is an array consisting of messages collected during execution
-        res.json(results.toString().replace(/(\r\n|\\n|\\r)/gm, " "));
+        // results is an array consisting of messages collected during execution 
+        // results = JSON.stringify(results)
+        res.send(results.toString().replace(/\\|\//g,'').replace(/'/g,'"'));
       });
     } catch (error) {
       res.json({ message: error });
