@@ -11,7 +11,6 @@ from Tokenizer import Tokenizer
 from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
-import preprocessing_of_corpus
 
 # Download tokenizers
 # nltk.download("punkt") # pretrained tokenizer
@@ -25,7 +24,7 @@ def get_corpus_from_txt_file (language):
    
 # This function returnes all the sentences from database
 def get_corpus_from_db (language):
-    sentences = preprocessing_of_corpus.main()
+    sentences = []
     return sentences
 
 # Train new model for the corpus
@@ -33,7 +32,7 @@ def get_corpus_from_db (language):
 def main(word, language, part_of_speech, number_of_clusters):
     # here we need to get sentences either from txt or db file
     sentences = get_corpus_from_txt_file(language)
-    sentences = get_corpus_from_db (language)
+    # sentences = get_corpus_from_db (language)
 
     vocabulary = Vocabulary(language)
     cluster = Cluster(language, number_of_clusters)

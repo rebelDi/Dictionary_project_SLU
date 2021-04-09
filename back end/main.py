@@ -9,7 +9,9 @@ from Tokenizer import Tokenizer
 from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
-import postgre_retrieve_sentences
+import sys
+
+import json
 
 # Use sentences from txt file
 def use_existing_data_from_txt (language):
@@ -18,8 +20,7 @@ def use_existing_data_from_txt (language):
     
 # Use sentences with specific work from db
 def use_sentence_from_db (word, language):
-    
-    sentences = postgre_retrieve_sentences.main(word)
+    sentences = []
     # sentences = get_sentences_with_this_word_from_db(word, language)
     return sentences
 
@@ -44,13 +45,14 @@ def main_use_txt_files(word, language, part_of_speech):
     if sentences_with_wordPOS == []:
         return cluster.get_sententences_found_result()
     average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
-    
+
     return cluster.clustering(sentences_with_wordPOS, average_vector)
+
 
 def main(word, language, part_of_speech):
     number_of_clusters = -1
 
-    sentences = use_sentence_from_db(word,language)
+    sentences = []
     # sentences = load sentences with word from db
     vocabulary = Vocabulary(language)
     cluster = Cluster(language, number_of_clusters)
@@ -75,7 +77,7 @@ def main(word, language, part_of_speech):
 # print(main("она", "Russian", "Noun"))
 # print(main("вона", "Ukrainian", "Noun"))
 
-# print(main_use_txt_files("sink", "English", "Noun"))
+print(main_use_txt_files("sink", "English", "Noun"))
 # print(main_use_txt_files("water", "English", "Noun"))
 # print(main_use_txt_files("замок", "Russian", "Noun"))
 # print(main_use_txt_files("она", "Russian", "Noun"))
@@ -93,4 +95,4 @@ def main(word, language, part_of_speech):
 
 # print(main("hafif", "Turkish", "Noun"))
 # print(main("kal", "Turkish", "Noun"))
-# print(main(sys.argv[1], sys.argv[2], sys.argv[3]))
+# print(main_use_txt_files(sys.argv[1], sys.argv[2], sys.argv[3]))
