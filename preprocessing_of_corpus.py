@@ -145,6 +145,6 @@ def main():
 
     get_sentences_with_word(final_list_words,sent_tokenized)
 
-    return final_list_words
+    return sent_tokenized
 
 main()
