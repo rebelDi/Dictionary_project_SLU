@@ -32,7 +32,7 @@ def get_corpus_from_db (language):
 # sentences - all the sentences in the corpus
 def main(word, language, part_of_speech, number_of_clusters):
     # here we need to get sentences either from txt or db file
-    sentences = get_corpus_from_txt_file(language)
+    # sentences = get_corpus_from_txt_file(language)
     sentences = get_corpus_from_db (language)
 
     vocabulary = Vocabulary(language)

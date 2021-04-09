@@ -51,7 +51,6 @@ def main(word, language, part_of_speech):
     number_of_clusters = -1
 
     sentences = use_sentence_from_db(word,language)
-    # sentences = load sentences with word from db
     vocabulary = Vocabulary(language)
     cluster = Cluster(language, number_of_clusters)
     file_manager = File_Manager(language)
