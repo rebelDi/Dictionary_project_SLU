@@ -9,6 +9,9 @@ from Tokenizer import Tokenizer
 from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
+import sys
+
+import json
 
 # Use sentences from txt file
 def use_existing_data_from_txt (language):
@@ -22,7 +25,7 @@ def use_sentence_from_db (word, language):
     return sentences
 
 def main_use_txt_files(word, language, part_of_speech):
-    number_of_clusters = 2
+    number_of_clusters = -1
 
     # here we choose if we are using db or txt files
     sentences = use_existing_data_from_txt(language)
@@ -32,20 +35,22 @@ def main_use_txt_files(word, language, part_of_speech):
     throne2vec = file_manager.load_element_from_file("thrones2vec")
     all_word_vectors_matrix_2d = file_manager.load_element_from_file("all_word_vectors_matrix_2d")
 
-    vocabulary = Vocabulary(language)
     cluster = Cluster(language, number_of_clusters)
+    vocabulary = Vocabulary(language)
 
     sentences_with_word = vocabulary.get_only_sentences_with_word(word, sentences)
     file_manager.save_element_to_file(sentences_with_word, "sentences_with_word")
 
     sentences_with_wordPOS = vocabulary.get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
-        return [['No sentences found']]
+        return cluster.get_sententences_found_result()
     average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
+
     return cluster.clustering(sentences_with_wordPOS, average_vector)
 
+
 def main(word, language, part_of_speech):
-    number_of_clusters = 2
+    number_of_clusters = -1
 
     sentences = []
     # sentences = load sentences with word from db
@@ -61,8 +66,9 @@ def main(word, language, part_of_speech):
 
     sentences_with_wordPOS = vocabulary.get_sentences_with_part_of_speech(word, part_of_speech, sentences)
     if sentences_with_wordPOS == []:
-        return [['No sentences found']]
-    average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
+        return cluster.get_sententences_found_result()
+    average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)    
+    
     return cluster.clustering(sentences_with_wordPOS, average_vector)
 
 # print(main("sink", "English", "Verb"))
@@ -71,6 +77,22 @@ def main(word, language, part_of_speech):
 # print(main("она", "Russian", "Noun"))
 # print(main("вона", "Ukrainian", "Noun"))
 
+# print(main_use_txt_files("sink", "English", "Noun"))
+# print(main_use_txt_files("water", "English", "Noun"))
+# print(main_use_txt_files("замок", "Russian", "Noun"))
+# print(main_use_txt_files("она", "Russian", "Noun"))
+# print(main_use_txt_files("kal", "Turkish", "Noun"))
+
+# main_use_txt_files("sink", "English", "Verb")
+# main_use_txt_files("water", "English", "Noun")
+
+# main_use_txt_files("замок", "Russian", "Noun")
+# main_use_txt_files("она", "Russian", "Noun")
+
+# main_use_txt_files("hafif", "Turkish", "Noun")
+# main_use_txt_files("kal", "Turkish", "Noun")
+# main("вона", "Ukrainian", "Noun")
+
 # print(main("hafif", "Turkish", "Noun"))
 # print(main("kal", "Turkish", "Noun"))
-# print(main(sys.argv[1], sys.argv[2], sys.argv[3]))
+print(main_use_txt_files(sys.argv[1], sys.argv[2], sys.argv[3]))

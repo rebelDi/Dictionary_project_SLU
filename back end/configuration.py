@@ -43,5 +43,5 @@ def main(word, language, part_of_speech, number_of_clusters):
 
 
 # main("sink", "English", "Verb", 2)
-# main("hafif", "Turkish", "Noun", 2)
+main("hafif", "Turkish", "Noun", 2)
 # main("замок", "Russian", "Noun", 2)
