@@ -62,4 +62,4 @@ def main(word, language, part_of_speech, number_of_clusters):
 
 # print(main("hafif", "Turkish", "Noun", 2))
 # print(main("kal", "Turkish", "Noun", 2))
-# print(main(sys.argv[1], sys.argv[2], sys.argv[3], 2))
+print(main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
