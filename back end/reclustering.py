@@ -9,6 +9,14 @@ from Tokenizer import Tokenizer
 from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
+import postgre_retrieve_sentences
+
+# Use sentences with specific work from db
+def use_sentence_from_db (word, language):
+    
+    sentences = postgre_retrieve_sentences.main(word)
+    # sentences = get_sentences_with_this_word_from_db(word, language)
+    return sentences
 
 def main(word, language, part_of_speech, number_of_clusters):
     sentences = use_sentence_from_db(word,language)

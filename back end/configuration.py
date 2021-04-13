@@ -25,6 +25,7 @@ def get_corpus_from_txt_file (language):
    
 # This function returnes all the sentences from database
 def get_corpus_from_db (language):
+    sentences = []
     sentences = preprocessing_of_corpus.main()
     return sentences
 
