@@ -1,12 +1,6 @@
 import React from "react";
-import {
-  TextField,
-  MenuItem,
-  ThemeProvider,
-  Button,
-  IconButton,
-} from "@material-ui/core";
-import { Alarm, FindInPage, Search } from "@material-ui/icons";
+import { TextField, MenuItem, IconButton } from "@material-ui/core";
+import { Search } from "@material-ui/icons";
 import "./Inputs.css";
 import languages from "../../data/languages";
 import poSpeech from "../../data/partofspeech";
@@ -32,12 +26,14 @@ const Inputs = ({
         label="Search a Word"
         onChange={(e) => setWord(e.target.value)}
       />
-      <IconButton color="primary" aria-label="add an alarm">
-        <Search
-          onClick={(e) => {
-            apiCall(language, word, partOfSpeech, setMeanings);
-          }}
-        />
+      <IconButton
+        color="primary"
+        aria-label="add an alarm"
+        onClick={(e) => {
+          apiCall(language, word, partOfSpeech, setMeanings);
+        }}
+      >
+        <Search />
       </IconButton>
 
       <br />
