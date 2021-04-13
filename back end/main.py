@@ -9,7 +9,8 @@ from Tokenizer import Tokenizer
 from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
-import postgre_retrieve_sentences
+import sys
+# import postgre_retrieve_sentences
 
 # Use sentences from txt file
 def use_existing_data_from_txt (language):
@@ -18,8 +19,8 @@ def use_existing_data_from_txt (language):
     
 # Use sentences with specific work from db
 def use_sentence_from_db (word, language):
-    
-    sentences = postgre_retrieve_sentences.main(word)
+    sentences = []
+    # sentences = postgre_retrieve_sentences.main(word)
     # sentences = get_sentences_with_this_word_from_db(word, language)
     return sentences
 
@@ -93,4 +94,4 @@ def main(word, language, part_of_speech):
 
 # print(main("hafif", "Turkish", "Noun"))
 # print(main("kal", "Turkish", "Noun"))
-# print(main(sys.argv[1], sys.argv[2], sys.argv[3]))
+print(main_use_txt_files(sys.argv[1], sys.argv[2], sys.argv[3]))
