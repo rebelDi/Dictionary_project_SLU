@@ -47,6 +47,7 @@ def main_use_txt_files(word, language, part_of_speech):
     
     return cluster.clustering(sentences_with_wordPOS, average_vector)
 
+
 def main(word, language, part_of_speech):
     number_of_clusters = -1
 
