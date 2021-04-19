@@ -35,15 +35,20 @@ def main(word, language, part_of_speech, number_of_clusters):
     # here we need to get sentences either from txt or db file
     sentences = get_corpus_from_txt_file(language)
     # sentences = get_corpus_from_db (language)
+    print("Got sentences")
 
     vocabulary = Vocabulary(language)
+    print("Created Vocabulary")
     cluster = Cluster(language, number_of_clusters)
 
     words = vocabulary.make_array_of_words_from_sentences(sentences)
+    print("Made arrays for every sentence")
     throne2vec = vocabulary.build_vocabulary(words) # get the trained model (vocabulary)
+    print("Trained the model")
     all_word_vectors_matrix_2d = cluster.make_vectors_2D(throne2vec)
+    print("Made matrix with vectors")
 
 
 main("sink", "English", "Verb", 2)
 # main("hafif", "Turkish", "Noun", 2)
-# main("замок", "Russian", "Noun", 2)
+main("замок", "Russian", "Noun", 2)
