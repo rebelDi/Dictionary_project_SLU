@@ -12,6 +12,7 @@ class Tokenizer:
 
         # tokenize into sentences
         raw_sentences = tokenizer.tokenize(corpus) # make it array with separate sentences
+        # print("Got " + str(len(raw_sentences)) + " sentences from corpus")
         self.save_sentences_to_file(raw_sentences)
         return raw_sentences
 

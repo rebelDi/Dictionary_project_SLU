@@ -64,7 +64,7 @@ def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
     throne2vec = file_manager.load_element_from_file("thrones2vec")
     all_word_vectors_matrix_2d = file_manager.load_element_from_file("all_word_vectors_matrix_2d")
 
-    cluster = Cluster(language, number_of_clusters)
+    cluster = Cluster(language, int(number_of_clusters))
     vocabulary = Vocabulary(language)
 
     sentences_with_word = check_existent_sentences_txt(file_manager, word, language, vocabulary, sentences)
@@ -83,7 +83,7 @@ def main(word, language, part_of_speech, number_of_clusters):
     sentences = check_existent_sentences_db(file_manager, word, language)
     
     vocabulary = Vocabulary(language)
-    cluster = Cluster(language, number_of_clusters)
+    cluster = Cluster(language, int(number_of_clusters))
     
     file_manager.save_element_to_file(sentences, "sentences_with_word")
 
