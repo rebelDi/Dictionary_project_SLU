@@ -11,7 +11,7 @@ from Tokenizer import Tokenizer
 from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
-import preprocessing_of_corpus
+# import preprocessing_of_corpus
 
 # Download tokenizers
 # nltk.download("punkt") # pretrained tokenizer
@@ -26,24 +26,29 @@ def get_corpus_from_txt_file (language):
 # This function returnes all the sentences from database
 def get_corpus_from_db (language):
     sentences = []
-    sentences = preprocessing_of_corpus.main()
+    # sentences = preprocessing_of_corpus.main()
     return sentences
 
 # Train new model for the corpus
 # sentences - all the sentences in the corpus
 def main(word, language, part_of_speech, number_of_clusters):
     # here we need to get sentences either from txt or db file
-    # sentences = get_corpus_from_txt_file(language)
-    sentences = get_corpus_from_db (language)
+    sentences = get_corpus_from_txt_file(language)
+    # sentences = get_corpus_from_db (language)
+    print("Got sentences")
 
     vocabulary = Vocabulary(language)
+    print("Created Vocabulary")
     cluster = Cluster(language, number_of_clusters)
 
     words = vocabulary.make_array_of_words_from_sentences(sentences)
+    print("Made arrays for every sentence")
     throne2vec = vocabulary.build_vocabulary(words) # get the trained model (vocabulary)
+    print("Trained the model")
     all_word_vectors_matrix_2d = cluster.make_vectors_2D(throne2vec)
+    print("Made matrix with vectors")
 
 
-# main("sink", "English", "Verb", 2)
-main("hafif", "Turkish", "Noun", 2)
-# main("замок", "Russian", "Noun", 2)
+main("sink", "English", "Verb", 2)
+# main("hafif", "Turkish", "Noun", 2)
+main("замок", "Russian", "Noun", 2)

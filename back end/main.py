@@ -9,7 +9,8 @@ from Tokenizer import Tokenizer
 from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
-import postgre_retrieve_sentences
+import sys
+# import postgre_retrieve_sentences
 
 # Use sentences from txt file
 def use_existing_data_from_txt (language):
@@ -17,15 +18,44 @@ def use_existing_data_from_txt (language):
     return sentences
     
 # Use sentences with specific work from db
-def use_sentence_from_db (word, language):
-    
-    sentences = postgre_retrieve_sentences.main(word)
+def use_sentences_from_db (word, language):
+    sentences = []
+    # sentences = postgre_retrieve_sentences.main(word)
     # sentences = get_sentences_with_this_word_from_db(word, language)
     return sentences
 
-def main_use_txt_files(word, language, part_of_speech):
-    number_of_clusters = -1
 
+def check_existent_sentences_txt(file_manager, word, language, vocabulary, sentences):
+    # Temporarily save the past entry of the search and received sentences from db
+    try:
+        past_state_parameters = file_manager.load_element_from_file("last_state")
+        if past_state_parameters[0] == word and past_state_parameters[1] == language:
+            sentences_with_word = file_manager.load_element_from_file("sentences_with_word")
+        else:
+            raise FileNotFoundError
+    except FileNotFoundError:
+        sentences_with_word = vocabulary.get_only_sentences_with_word(word, sentences)
+        file_manager.save_element_to_file(sentences_with_word, "sentences_with_word")
+        file_manager.save_element_to_file([word, language], "last_state")
+    return sentences_with_word
+
+
+def check_existent_sentences_db(file_manager, word, language):
+    # Temporarily save the past entry of the search and received sentences from db
+    try:
+        past_state_parameters = file_manager.load_element_from_file("last_state")
+        if past_state_parameters[0] == word and past_state_parameters[1] == language:
+            sentences_with_word = file_manager.load_element_from_file("sentences_with_word")
+        else:
+            raise FileNotFoundError
+    except FileNotFoundError:
+        sentences_with_word = use_sentences_from_db(word,language)
+        file_manager.save_element_to_file(sentences_with_word, "sentences_with_word")
+        file_manager.save_element_to_file([word, language], "last_state")
+    return sentences_with_word
+
+
+def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
     # here we choose if we are using db or txt files
     sentences = use_existing_data_from_txt(language)
     file_manager = File_Manager(language)
@@ -34,12 +64,11 @@ def main_use_txt_files(word, language, part_of_speech):
     throne2vec = file_manager.load_element_from_file("thrones2vec")
     all_word_vectors_matrix_2d = file_manager.load_element_from_file("all_word_vectors_matrix_2d")
 
-    cluster = Cluster(language, number_of_clusters)
+    cluster = Cluster(language, int(number_of_clusters))
     vocabulary = Vocabulary(language)
 
-    sentences_with_word = vocabulary.get_only_sentences_with_word(word, sentences)
-    file_manager.save_element_to_file(sentences_with_word, "sentences_with_word")
-
+    sentences_with_word = check_existent_sentences_txt(file_manager, word, language, vocabulary, sentences)
+    
     sentences_with_wordPOS = vocabulary.get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
         return cluster.get_sententences_found_result()
@@ -48,13 +77,13 @@ def main_use_txt_files(word, language, part_of_speech):
     return cluster.clustering(sentences_with_wordPOS, average_vector)
 
 
-def main(word, language, part_of_speech):
-    number_of_clusters = -1
-
-    sentences = use_sentence_from_db(word,language)
-    vocabulary = Vocabulary(language)
-    cluster = Cluster(language, number_of_clusters)
+def main(word, language, part_of_speech, number_of_clusters):
     file_manager = File_Manager(language)
+
+    sentences = check_existent_sentences_db(file_manager, word, language)
+    
+    vocabulary = Vocabulary(language)
+    cluster = Cluster(language, int(number_of_clusters))
     
     file_manager.save_element_to_file(sentences, "sentences_with_word")
 
@@ -75,11 +104,11 @@ def main(word, language, part_of_speech):
 # print(main("она", "Russian", "Noun"))
 # print(main("вона", "Ukrainian", "Noun"))
 
-# print(main_use_txt_files("sink", "English", "Noun"))
-# print(main_use_txt_files("water", "English", "Noun"))
-# print(main_use_txt_files("замок", "Russian", "Noun"))
-# print(main_use_txt_files("она", "Russian", "Noun"))
-# print(main_use_txt_files("kal", "Turkish", "Noun"))
+# print(main_use_txt_files("sink", "English", "Noun", -1))
+# print(main_use_txt_files("water", "English", "Noun", -1))
+# print(main_use_txt_files("замок", "Russian", "Noun", -1))
+# print(main_use_txt_files("она", "Russian", "Noun", 2))
+# print(main_use_txt_files("kal", "Turkish", "Noun", -1))
 
 # main_use_txt_files("sink", "English", "Verb")
 # main_use_txt_files("water", "English", "Noun")
@@ -93,4 +122,4 @@ def main(word, language, part_of_speech):
 
 # print(main("hafif", "Turkish", "Noun"))
 # print(main("kal", "Turkish", "Noun"))
-# print(main(sys.argv[1], sys.argv[2], sys.argv[3]))
+print(main_use_txt_files(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
