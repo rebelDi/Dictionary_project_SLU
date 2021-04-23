@@ -10,6 +10,7 @@ function App() {
   const [word, setWord] = useState("");
   const [language, setLanguage] = useState("English");
   const [partOfSpeech, setPartOfSpeech] = useState("Noun");
+  const [numberOfCluster, setNumberOfCluster] = useState("1");
 
   useEffect(() => {}, []);
 
@@ -36,7 +37,8 @@ function App() {
             word={word}
             setWord={setWord}
             setMeanings={setMeanings}
-            meanings={meanings}
+            setNumberOfCluster={setNumberOfCluster}
+            numberOfCluster={numberOfCluster}
           />
         </center>
         <Definitions
