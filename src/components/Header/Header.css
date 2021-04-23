@@ -1,17 +1,19 @@
 .header {
-    color: black;
-    text-align: center;
-    font-size: 5vw;
-    margin-top: 1%;
-} 
+  color: black;
+  text-align: center;
+  font-size: 5vw;
+  margin-top: 1%;
+}
 
 .title {
-    /* background-image: url('./title.jpg'); */
-    /* color: rgba(0, 0, 0, 0.5); */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    font-size: 150%;
-    font-weight: bold;
-    color: rgb(243, 241, 146);  
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-size: 150%;
+  font-weight: bold;
+  color: rgb(243, 241, 146);
+}
+.language {
+  margin-left: 100%;
+  size: small;
 }

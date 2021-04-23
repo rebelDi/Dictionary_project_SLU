@@ -1,5 +1,11 @@
 import React from "react";
-import { TextField, MenuItem, IconButton } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  IconButton,
+  Slider,
+  Typography,
+} from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 import "./Inputs.css";
 import languages from "../../data/languages";
@@ -14,8 +20,14 @@ const Inputs = ({
   word,
   setWord,
   setMeanings,
-  meanings,
+  setNumberOfCluster,
+  numberOfCluster,
 }) => {
+  function valuetext(value) {
+    setNumberOfCluster(value);
+    return `${value}`;
+  }
+
   return (
     <div className="inputs">
       <br />
@@ -30,7 +42,7 @@ const Inputs = ({
         color="primary"
         aria-label="add an alarm"
         onClick={(e) => {
-          apiCall(language, word, partOfSpeech, setMeanings);
+          apiCall(language, word, partOfSpeech, numberOfCluster, setMeanings);
         }}
       >
         <Search />
@@ -53,6 +65,7 @@ const Inputs = ({
       </TextField>
 
       <TextField
+        className="language"
         select
         label="Language"
         value={language}
@@ -65,6 +78,22 @@ const Inputs = ({
           </MenuItem>
         ))}
       </TextField>
+
+      <Typography id="discrete-slider-small-steps" gutterBottom>
+        {" Number Of Cluster "}
+      </Typography>
+      <Slider
+        defaultValue={2}
+        getAriaValueText={valuetext}
+        aria-labelledby="discrete-slider-small-steps"
+        step={1}
+        marks
+        min={2}
+        max={10}
+        color="secondary"
+        valueLabelDisplay="auto"
+        onChange={valuetext}
+      />
     </div>
   );
 };

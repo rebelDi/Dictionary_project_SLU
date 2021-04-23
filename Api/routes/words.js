@@ -24,11 +24,21 @@ router.get(
         ],
       };
 
-      PythonShell.run("main.py", options, function (err, results) {
-        if (err) throw err;
-        // results is an array consisting of messages collected during execution 
-        // results = JSON.stringify(results)
-        res.send(results.toString().replace(/\\|\//g,'').replace(/'/g,'"'));
+      const filename = "main.py";
+      if (req.params.numberofcluster == 1) options.args[3] = "-1";
+      PythonShell.run(filename, options, function (err, results) {
+        console.log(filename, options.args[3]);
+        if (err) res.json({ message: err });
+        if (results !== null)
+          res.send(
+            results
+              .toString()
+              .replace(/\\|\//g, "")
+              .replace(/'/g, '"')
+              .replace(/""/g, '"')
+              .replace(/, "|,"/g, ",")
+              .replace(/,example/g, `,"example`)
+          );
       });
     } catch (error) {
       res.json({ message: error });
