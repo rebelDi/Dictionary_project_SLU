@@ -13,6 +13,7 @@ from Vocabulary import Vocabulary
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import numpy as np
+from urllib.parse import quote
 
 class Cluster:
 
@@ -82,8 +83,8 @@ class Cluster:
         return number_of_clusters
 
     def get_sententences_found_result(self, result = NO_RESULT_OUTPUT):
-        no_results_string = {"meanings": {"meaning": [{"id": 1, "examples": [{"id": 1, "example": result}]}]}}
-        return [no_results_string]
+        no_results_string = [{"meanings": {"meaning": [{"id": 1, "examples": [{"id": 1, "example": result}]}]}}]
+        return json.dumps(no_results_string)
 
     def get_clusters(self, sentences_with_word, average_vector):
         # print(sentences_with_word)
@@ -116,7 +117,10 @@ class Cluster:
             for k in range(0, len(examples[i])):
                 example = {}
                 example["id"] = k+1
-                example["example"] = examples[i][k]
+                temp_example = examples[i][k]
+                if self.language != "English":
+                    temp_example = quote(temp_example, safe="%/:=&?~#+!$,;'@()*[]")
+                example["example"] = temp_example
                 examples_json.append(example)
             cluster["examples"] = examples_json
 
@@ -124,6 +128,7 @@ class Cluster:
 
         result_json["meanings"] = result
         result_json = [result_json]
+        result_json = json.dumps(result_json)
       
         return result_json
 

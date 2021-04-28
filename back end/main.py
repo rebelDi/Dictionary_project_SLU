@@ -10,6 +10,7 @@ from Vocabulary import Vocabulary
 from Cluster import Cluster
 from File_Manager import File_Manager
 import sys
+from urllib.parse import unquote
 # import postgre_retrieve_sentences
 
 # Use sentences from txt file
@@ -56,6 +57,9 @@ def check_existent_sentences_db(file_manager, word, language):
 
 
 def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
+    if language != "English":
+        word = unquote(word)
+        
     # here we choose if we are using db or txt files
     sentences = use_existing_data_from_txt(language)
     file_manager = File_Manager(language)
@@ -78,6 +82,9 @@ def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
 
 
 def main(word, language, part_of_speech, number_of_clusters):
+    if language != "English":
+        word = unquote(word)
+    
     file_manager = File_Manager(language)
 
     sentences = check_existent_sentences_db(file_manager, word, language)

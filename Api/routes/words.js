@@ -17,7 +17,7 @@ router.get(
         pythonOptions: ["-u"], // get print results in real-time
         scriptPath: "../back end",
         args: [
-          req.params.word,
+          encodeURI(req.params.word),
           req.params.language,
           req.params.partofspeech,
           req.params.numberofcluster,
@@ -30,15 +30,8 @@ router.get(
         console.log(filename, options.args[3]);
         if (err) res.json({ message: err });
         if (results !== null)
-          res.send(
-            results
-              .toString()
-              .replace(/\\|\//g, "")
-              .replace(/'/g, '"')
-              .replace(/""/g, '"')
-              .replace(/, "|,"/g, ",")
-              .replace(/,example/g, `,"example`)
-          );
+          results = decodeURI(results);
+          res.send(results);
       });
     } catch (error) {
       res.json({ message: error });
