@@ -30,6 +30,7 @@ router.get(
         console.log(filename, options.args[3]);
         if (err) res.json({ message: err });
         if (results !== null)
+          results = decodeURI(results);
           res.send(results);
       });
     } catch (error) {

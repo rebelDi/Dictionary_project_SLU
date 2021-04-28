@@ -128,6 +128,7 @@ class Cluster:
 
         result_json["meanings"] = result
         result_json = [result_json]
+        result_json = json.dumps(result_json)
       
         return result_json
 
