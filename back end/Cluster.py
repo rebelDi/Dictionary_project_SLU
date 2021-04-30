@@ -33,7 +33,7 @@ class Cluster:
         # put the vectors into a giant matrix
         all_word_vectors_matrix = thrones2vec.wv.syn0
         
-        File_Manager(self.language).save_element_to_file(all_word_vectors_matrix, "all_word_vectors_matrix")
+        # File_Manager(self.language).save_element_to_file(all_word_vectors_matrix, "all_word_vectors_matrix")
 
         # We can save new tranformed matrix or load the existing one from file
         # transorm matrix of vectors to 2d vectors
@@ -119,6 +119,7 @@ class Cluster:
                 example["id"] = k+1
                 temp_example = examples[i][k]
                 if self.language != "English":
+                    # temp_example = str(temp_example).replace('"', "'")
                     temp_example = quote(temp_example, safe="%/:=&?~#+!$,;'@()*[]")
                 example["example"] = temp_example
                 examples_json.append(example)

@@ -35,7 +35,7 @@ def main(word, language, part_of_speech, number_of_clusters):
     # here we need to get sentences either from txt or db file
     sentences = get_corpus_from_txt_file(language)
     # sentences = get_corpus_from_db (language)
-    print("Got sentences")
+    print("Got sentences for language " + language)
 
     vocabulary = Vocabulary(language)
     print("Created Vocabulary")
@@ -50,5 +50,5 @@ def main(word, language, part_of_speech, number_of_clusters):
 
 
 main("sink", "English", "Verb", 2)
-# main("hafif", "Turkish", "Noun", 2)
+main("hafif", "Turkish", "Noun", 2)
 main("замок", "Russian", "Noun", 2)
