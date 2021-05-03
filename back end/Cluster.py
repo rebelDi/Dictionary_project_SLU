@@ -119,7 +119,7 @@ class Cluster:
                 example["id"] = k+1
                 temp_example = examples[i][k]
                 if self.language != "English":
-                    # temp_example = str(temp_example).replace('"', "'")
+                    temp_example = str(temp_example).replace('"', "'")
                     temp_example = quote(temp_example, safe="%/:=&?~#+!$,;'@()*[]")
                 example["example"] = temp_example
                 examples_json.append(example)
