@@ -1,1 +1,1 @@
-web: /Api npm start
+web: npm start --prefix Api/
