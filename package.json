@@ -18,7 +18,7 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -b master -d build",
+    "deploy": "gh-pages -b main-release -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -46,5 +46,20 @@
     "css-loader": "^4.3.0",
     "gh-pages": "^3.1.0",
     "style-loader": "^1.3.0"
+  },
+  "description": "**This application is build using ReactJS, in order for it to work on your device make sure you have NodeJS**\r   Use this [link](https://nodejs.org/en/download/) to install NodeJS\r   Use this [link](https://reactjs.org/) to install all the needed modules and create a React Application to see if eveerything works",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rebelDi/Dictionary_project_SLU.git"
+  },
+  "keywords": [
+    "heroku",
+    "dictionary"
+  ],
+  "author": "rebeldi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rebelDi/Dictionary_project_SLU/issues"
   }
 }
