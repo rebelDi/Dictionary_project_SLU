@@ -2,11 +2,14 @@
 import codecs
 import re
 import string
-from nltk.corpus import stopwords
 import spacy
-from nltk.tokenize import sent_tokenize
-from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.tokenize import sent_tokenize, word_tokenize
+import nltk.stem as stem
+
+
 from postgre_insertion_sentences import insert_sentences
+
 
 #tokenize the corpus into sentences
 def sentences(list):
@@ -34,8 +37,8 @@ def remove(text):
     t = re.sub(r"($|€|¥|₹|£)","",t)
     t = re.sub(r"(%)","",t)
     t = re.sub(r"\d+","",t)
-    t = re.sub(r"\n","",t)
-    t = re.sub(r"\xa0", "", t)
+    t = re.sub(r"\n"," ",t)
+    t = re.sub(r"\xa0","", t)
     return t
 
 #Return punctuations from text
@@ -48,11 +51,20 @@ def pun(text):
 #loading the engish language for lemmatization
 nlp = spacy.load('en_core_web_sm')
 
+def stemming(words):
+    ls = stem.LancasterStemmer()
+    stemmed_words = []
+    for word in words:
+        stemmed_words.append(ls.stem(word))
+    return(stemmed_words)
+
+
 #reducing the words in a sentence to its root form
-def lemmatizer(text):
+def lemmatizer(words):
     """Returns text after lemmatization"""
     sent = []
-    doc = nlp(text)
+    words = ''.join(words)
+    doc = nlp(words)
     for word in doc:
         sent.append(word.lemma_)
 
@@ -64,7 +76,7 @@ def extras(sentences):
     t = re.sub(r"\"|\—|\'|\’\n","",sentences)
     word_list = t.split()
     for index, word in enumerate(word_list):
-        if len(word) <=1:
+        if len(word) <=2:
             del word_list[index]
     t = ' '.join(word_list)
 
@@ -78,7 +90,7 @@ def stop_word(sentence):
     for word in words_list:
         if word not in stop_words:
             list_.append(word)
-    return ' '.join(list_)
+    return '  '.join(list_)
 #returns list of words after eliminating all the repeated words in the list
 def remove_repetative_words(words):
 
@@ -94,13 +106,16 @@ def get_sentences_with_word(words, sentences):
     for word in words:
         for sentence in sentences:
             words_in_sentence = word_tokenize(sentence)
+            words_in_sentences = stemming(words_in_sentence)
 
-            for word_in_sentence in words_in_sentence:
+
+            for word_in_sentence in words_in_sentences:
                 if word_in_sentence == word :
                     sentences_with_word.append(sentence)
 
         x = insert_sentences(word, sentences_with_word)#function call for inserting the sentences into db
-        print("word:", word, "sentence:", sentences_with_word)
+
+        #print("word:", word, "sentence:", sentences_with_word)
         print(x)
         sentences_with_word  = []
 
@@ -111,7 +126,7 @@ def main():
     #with open('GOT.txt', 'r') as f:
      #   contents = f.readlines()
 
-    with codecs.open("text1.txt", "r", "utf-8") as fileT:
+    with codecs.open("(1) The Hunger Games.txt", "r", "utf-8") as fileT:
         corpus_raw = fileT.read()
 
     # Joining the lines to make text block
@@ -121,9 +136,13 @@ def main():
 
     # Sentence tokenize the text
     sent_tokenized = sentences(corpus_raw)
+    tokenized_sentences = []
+    for sent in sent_tokenized:
+        tokenized_sentences.append(re.sub("[`\ \r\n-=~!@#$%^&*()_+\[\]{};\'\\:|<,./<>?]"," ",sent))
+
 
     # Removing all the unnecessary things from the text
-    get_sentences_without_special_symbols = [remove(line) for line in sent_tokenized]
+    get_sentences_without_special_symbols = [remove(line) for line in tokenized_sentences]
 
     # Removing punctuations
     get_sentences_without_punctuations = [pun(line.lower()) for line in get_sentences_without_special_symbols]
@@ -134,6 +153,7 @@ def main():
     # Removing stop words
     get_sentences_without_stopwords = [stop_word(sent) for sent in get_sentences_without_extras]
 
+
     #Lemmatizing the sentences
     #get_sentences_after_lemmatization = [lemmatizer(sent) for sent in get_sentences_without_stopwords]
 
@@ -143,8 +163,13 @@ def main():
     final_list_words = remove_repetative_words(words_in_sentences)
     print(final_list_words)
 
-    get_sentences_with_word(final_list_words,sent_tokenized)
+    words_with_stemming = stemming(final_list_words)
+    print(words_with_stemming)
 
-    return sent_tokenized
+    get_sentences_with_word(words_with_stemming,tokenized_sentences)
+
+    return tokenized_sentences
+main()
+
 
 
