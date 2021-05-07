@@ -6,6 +6,7 @@ import spacy
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
 import nltk.stem as stem
+import corpus_get
 
 
 from postgre_insertion_sentences import insert_sentences
@@ -129,6 +130,7 @@ def main():
     with codecs.open("(1) The Hunger Games.txt", "r", "utf-8") as fileT:
         corpus_raw = fileT.read()
 
+    #corpus_raw = corpus_get.get_corpus_from_txt_files( )
     # Joining the lines to make text block
     #contents = ''.join(contents)
 
