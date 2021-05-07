@@ -2,5 +2,7 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
         ".vscode{,/**}"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/df0d7d32-d70c-40f9-a5fd-162804a8d517/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/dicitonary-new",
+    "appService.deploySubpath": "."
 }
