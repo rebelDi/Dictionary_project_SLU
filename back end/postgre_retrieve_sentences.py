@@ -5,7 +5,7 @@ import nltk.stem as stem
 
 
 
-def main():
+def postgre_retrieve_sentences():
     #connection to database
     #conn_string = "host='localhost' dbname='postgres' user='postgres' password='Post$123'"
     conn_string = "dbname= 'postgres' user='sdadmin@postgre-psd' host='postgre-psd.postgres.database.azure.com' password='Post$123' port='5432' "
@@ -19,5 +19,6 @@ def main():
     curs.execute(f"select sentence from english where word='{word}'")
     x= curs.fetchall()
     print(x)
+    return x
 
-main() # function call
+# main() # function call
