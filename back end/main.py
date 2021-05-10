@@ -11,7 +11,7 @@ from Cluster import Cluster
 from File_Manager import File_Manager
 import sys
 from urllib.parse import unquote
-from postgre_retrieve_sentences import postgre_retrieve_sentences
+# from postgre_retrieve_sentences import postgre_retrieve_sentences
 
 # Use sentences from txt file
 def use_existing_data_from_txt (language):
@@ -21,13 +21,12 @@ def use_existing_data_from_txt (language):
 # Use sentences with specific work from db
 def use_sentences_from_db (word, language):
     sentences = []
-    sentences = postgre_retrieve_sentences()
+    # sentences = postgre_retrieve_sentences.main(word)
     # sentences = get_sentences_with_this_word_from_db(word, language)
     return sentences
 
-use_sentences_from_db('sink', 'English')
 
-def check_existent_sentences_txt(file_manager, word, language, vocabulary):
+def check_existent_sentences_txt(file_manager, word, language, vocabulary, sentences):
     # Temporarily save the past entry of the search and received sentences from db
     try:
         past_state_parameters = file_manager.load_element_from_file("last_state")
@@ -36,7 +35,6 @@ def check_existent_sentences_txt(file_manager, word, language, vocabulary):
         else:
             raise FileNotFoundError
     except FileNotFoundError:
-        sentences = use_existing_data_from_txt(language)
         sentences_with_word = vocabulary.get_only_sentences_with_word(word, sentences)
         file_manager.save_element_to_file(sentences_with_word, "sentences_with_word")
         file_manager.save_element_to_file([word, language], "last_state")
@@ -63,7 +61,7 @@ def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
         word = unquote(word)
         
     # here we choose if we are using db or txt files
-    # sentences = use_existing_data_from_txt(language)
+    sentences = use_existing_data_from_txt(language)
     file_manager = File_Manager(language)
 
     # here we can load the existing model
@@ -73,15 +71,16 @@ def main_use_txt_files(word, language, part_of_speech, number_of_clusters):
     cluster = Cluster(language, int(number_of_clusters))
     vocabulary = Vocabulary(language)
 
-    sentences_with_word = check_existent_sentences_txt(file_manager, word, language, vocabulary)
+    sentences_with_word = check_existent_sentences_txt(file_manager, word, language, vocabulary, sentences)
     
     sentences_with_wordPOS = vocabulary.get_sentences_with_part_of_speech(word, part_of_speech, sentences_with_word)
     if sentences_with_wordPOS == []:
         return cluster.get_sententences_found_result()
+    file_manager.save_element_to_file(sentences_with_wordPOS, "result")
     average_vector = cluster.get_average_vector_of_sentence(sentences_with_wordPOS, all_word_vectors_matrix_2d, throne2vec)
-
-    return cluster.clustering(sentences_with_wordPOS, average_vector)
     
+    return cluster.clustering(sentences_with_wordPOS, average_vector)
+
 
 def main(word, language, part_of_speech, number_of_clusters):
     if language != "English":
@@ -108,28 +107,5 @@ def main(word, language, part_of_speech, number_of_clusters):
     
     return cluster.clustering(sentences_with_wordPOS, average_vector)
 
-# print(main("sink", "English", "Verb"))
-# print(main("water", "English", "Noun"))
-# print(main("замок", "Russian", "Noun"))
-# print(main("она", "Russian", "Noun"))
-# print(main("вона", "Ukrainian", "Noun"))
-
-# print(main_use_txt_files("sink", "English", "Noun", -1))
-# print(main_use_txt_files("water", "English", "Noun", -1))
-# print(main_use_txt_files("замок", "Russian", "Noun", -1))
-# print(main_use_txt_files("она", "Russian", "Noun", 2))
-# print(main_use_txt_files("kal", "Turkish", "Noun", -1))
-
-# main_use_txt_files("sink", "English", "Verb")
-# main_use_txt_files("water", "English", "Noun")
-
-# main_use_txt_files("замок", "Russian", "Noun")
-# main_use_txt_files("она", "Russian", "Noun")
-
-# main_use_txt_files("hafif", "Turkish", "Noun")
-# main_use_txt_files("kal", "Turkish", "Noun")
-# main("вона", "Ukrainian", "Noun")
-
-# print(main("hafif", "Turkish", "Noun"))
-# print(main("kal", "Turkish", "Noun"))
-# print(main_use_txt_files(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
+print(main_use_txt_files(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
+# print(main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])) # uncomment this line to test db
