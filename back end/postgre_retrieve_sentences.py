@@ -3,16 +3,15 @@
 import psycopg2
 import nltk.stem as stem
 
-
-
 def main(word,language):
     #connection to database
+    #conn_string = "host='localhost' dbname='postgres' user='postgres' password='Post$123'"
     conn_string = "dbname= 'postgres' user='sdadmin@postgre-psd' host='postgre-psd.postgres.database.azure.com' password='Post$123' port='5432' "
     #print(conn_string)
 
     con = psycopg2.connect(conn_string)
     curs = con.cursor()
-    
+
     #word = ls.stem("eyes")
     #word = "банковский"
     #language = "russian"
@@ -27,6 +26,9 @@ def main(word,language):
         curs.execute(f"select sentence from {language} where word='{word}'")
         x = curs.fetchall()
         return x
-        
+    if language== "turkish":
+        curs.execute(f"select sentence from {language} where word='{word}'")
+        x = curs.fetchall()
+        return x
 
 #main() # function call
