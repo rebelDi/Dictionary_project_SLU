@@ -25,8 +25,6 @@ def use_sentences_from_db (word, language):
     # sentences = get_sentences_with_this_word_from_db(word, language)
     return sentences
 
-use_sentences_from_db('sink', 'English')
-
 def check_existent_sentences_txt(file_manager, word, language, vocabulary):
     # Temporarily save the past entry of the search and received sentences from db
     try:
