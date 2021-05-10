@@ -19,7 +19,7 @@ In MacOs:
 You will automatically be transfered to the web page of the application in your local browser. Enjoy!
 
 ## Current bug: sometimes you can get a "Unicode misfunction error", our corpus has some special characters, which can break the Unicode while decoding the result. 
-
+## Right now you can only try pulling the example from txt file corpus, if you want to try to access our database, you need to install `psycopg2` module on your machine. Then go to `back end/main.py` and comment line `110`, then uncomment line `111`.
 
 ## -------------------------For developers------------------------- ##
 
