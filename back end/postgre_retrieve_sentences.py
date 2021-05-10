@@ -4,11 +4,8 @@ import psycopg2
 import nltk.stem as stem
 
 def main(word,language):
-    #connection to database
-    #conn_string = "host='localhost' dbname='postgres' user='postgres' password='Post$123'"
     conn_string = "dbname= 'postgres' user='sdadmin@postgre-psd' host='postgre-psd.postgres.database.azure.com' password='Post$123' port='5432' "
-    #print(conn_string)
-
+ 
     con = psycopg2.connect(conn_string)
     curs = con.cursor()
 
@@ -31,4 +28,3 @@ def main(word,language):
         x = curs.fetchall()
         return x
 
-#main() # function call

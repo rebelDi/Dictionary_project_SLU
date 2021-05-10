@@ -1,24 +1,25 @@
 .meanings {
-    color: rgb(0, 0, 0);
-    background-color: rgb(255, 255, 255);
-    margin-top: 200px;
-    width: 100%;
-    align-content: center;
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  margin-top: 200px;
+  width: 100%;
+  align-content: center;
 }
 
 .definition {
-    margin-top: 10px;
+  margin-top: 10px;
+  padding-bottom: 1%;
 }
 
 .arrow {
-    background-image: url('./arrow_icon.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    margin-left: 1px;
-    color: rgb(0, 0, 0, 0);
+  background-image: url("./arrow_icon.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-left: 1px;
+  color: rgb(0, 0, 0, 0);
 }
 
 .name {
-    margin-left: 10%;
+  margin-left: 10%;
 }

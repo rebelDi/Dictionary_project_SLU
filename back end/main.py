@@ -11,7 +11,7 @@ from Cluster import Cluster
 from File_Manager import File_Manager
 import sys
 from urllib.parse import unquote
-# from postgre_retrieve_sentences import postgre_retrieve_sentences
+from postgre_retrieve_sentences import postgre_retrieve_sentences
 
 # Use sentences from txt file
 def use_existing_data_from_txt (language):
@@ -21,10 +21,9 @@ def use_existing_data_from_txt (language):
 # Use sentences with specific work from db
 def use_sentences_from_db (word, language):
     sentences = []
-    # sentences = postgre_retrieve_sentences.main(word)
+    sentences = postgre_retrieve_sentences()
     # sentences = get_sentences_with_this_word_from_db(word, language)
     return sentences
-
 
 def check_existent_sentences_txt(file_manager, word, language, vocabulary):
     # Temporarily save the past entry of the search and received sentences from db

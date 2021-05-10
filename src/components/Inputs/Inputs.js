@@ -19,9 +19,11 @@ const Inputs = ({
   setPartOfSpeech,
   word,
   setWord,
+  meanings,
   setMeanings,
   setNumberOfCluster,
   numberOfCluster,
+  t,
 }) => {
   function valuetext(value) {
     setNumberOfCluster(value);
@@ -35,13 +37,14 @@ const Inputs = ({
         className="search_field"
         id="filled-basic"
         value={word}
-        label="Search a Word"
+        label={t("Search a Word")}
         onChange={(e) => setWord(e.target.value)}
       />
       <IconButton
         color="primary"
-        aria-label="add an alarm"
+        aria-label="search a word"
         onClick={(e) => {
+          console.log(word, numberOfCluster);
           apiCall(language, word, partOfSpeech, numberOfCluster, setMeanings);
         }}
       >
@@ -52,48 +55,59 @@ const Inputs = ({
       <br />
       <TextField
         select
-        label="Part of Speech"
+        label={t("Part of Speech")}
         value={partOfSpeech}
         onChange={(e) => setPartOfSpeech(e.target.value)}
         className="part_of_speech_field"
       >
         {poSpeech.map((item) => (
           <MenuItem key={item.label} value={item.label}>
-            {item.value}
+            {t(item.value)}
           </MenuItem>
         ))}
       </TextField>
 
       <TextField
-        className="language"
+        className="language_selector"
         select
-        label="Language"
+        label={t("Language")}
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
-        className="language_select"
       >
         {languages.map((item) => (
           <MenuItem key={item.label} value={item.label}>
-            {item.value}
+            {t(item.value)}
           </MenuItem>
         ))}
       </TextField>
-
-      <Typography id="discrete-slider-small-steps" gutterBottom>
-        {" Number Of Cluster "}
-      </Typography>
-      <Slider
-        defaultValue={2}
-        getAriaValueText={valuetext}
-        aria-labelledby="discrete-slider-small-steps"
-        step={1}
-        marks
-        min={2}
-        max={10}
-        color="secondary"
-        valueLabelDisplay="auto"
-        onChange={valuetext}
-      />
+      {meanings.length !== 0 ? (
+        <div>
+          <Typography id="discrete-slider-small-steps" gutterBottom>
+            {t("Number of Cluster")}
+          </Typography>
+          <Slider
+            defaultValue={2}
+            getAriaValueText={valuetext}
+            aria-labelledby="discrete-slider-small-steps"
+            step={1}
+            marks
+            min={2}
+            max={10}
+            color="secondary"
+            valueLabelDisplay="auto"
+            onChange={valuetext}
+            onChangeCommitted={(e) => {
+              apiCall(
+                language,
+                word,
+                partOfSpeech,
+                numberOfCluster,
+                setMeanings
+              );
+            }}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };

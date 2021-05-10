@@ -1,45 +1,45 @@
 import React from "react";
 import "./Definitions.css";
-import { Divider } from "@material-ui/core";
+import ListView from "../ListView/ListView";
+import { List, ListSubheader } from "@material-ui/core";
+import uniqid from "uniqid";
 
-const Definitions = ({ meanings, word, language, partOfSpeech }) => {
-  console.log(word, language, partOfSpeech);
-  console.log("meaningssss", meanings);
-
+const Definitions = ({ t, meanings, word }) => {
   return (
     <div className="meanings">
-      {meanings.map !== undefined ? (
-        meanings.map((m) => {
-          return [m].map((e) => {
-            console.log(e);
-            return e.meanings.meaning.map((def) => {
-              console.log(def);
-              return def.examples.map((d) => {
+      <List
+        component="nav"
+        aria-labelledby="nested-list-subheader"
+        subheader={
+          <ListSubheader component="div" id="nested-list-subheader">
+            {t("Meaning List")}
+          </ListSubheader>
+        }
+      >
+        {meanings.map !== undefined ? (
+          meanings.map((m) => {
+            return [m].map((e) => {
+              console.log(e);
+              return e.meanings.meaning.map((def) => {
+                console.log(def);
+
                 return (
-                  <div className="definition" key={d.id}>
-                    <b>
-                      {d.id === 1 ? (
-                        <div>
-                          <h3>Meaning {def.id}:</h3>
-                          <Divider />
-                        </div>
-                      ) : null}
-                      <span className="arrow">arrow</span>
-                      {d.example}
-                    </b>
+                  <div className="definition">
+                    {<ListView key={uniqid()} meaning={def} t={t} />}
                   </div>
                 );
               });
             });
-          });
-        })
-      ) : (
-        <div>
-          <span className="arrow">arrow</span>
-          {"There is no result for "}
-          {word}
-        </div>
-      )}
+          })
+        ) : (
+          <div>
+            <span className="arrow">arrow</span>
+            {t("There is No Result")}
+            {" "}
+            {word}
+          </div>
+        )}
+      </List>
     </div>
   );
 };

@@ -27,11 +27,18 @@ router.get(
       const filename = "main.py";
       if (req.params.numberofcluster == 1) options.args[3] = "-1";
       PythonShell.run(filename, options, function (err, results) {
-        console.log(filename, options.args[3]);
+        console.log(filename, options.args[3],options.scriptPath);
         if (err) res.json({ message: err });
-        if (results !== null)
-          results = decodeURI(results);
-          res.send(results);
+        if (results !== null) results = decodeURI(results);
+        res.send(
+          results
+          // .toString()
+          // .replace(/\\|\//g, "")
+          // .replace(/'/g, '"')
+          // .replace(/""|" "/g, '"')
+          // .replace(/, "|,"/g, ",")
+          // .replace(/,example/g, `,"example`)
+        );
       });
     } catch (error) {
       res.json({ message: error });
