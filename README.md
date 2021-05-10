@@ -18,6 +18,8 @@ In MacOs:
 ### `npm start`
 You will automatically be transfered to the web page of the application in your local browser. Enjoy!
 
+## Current bug: sometimes you can get a "Unicode misfunction error", our corpus has some special characters, which can break the Unicode while decoding the result. 
+
 
 ## -------------------------For developers------------------------- ##
 
