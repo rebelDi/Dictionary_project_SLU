@@ -1,8 +1,9 @@
 import psycopg2
 
 
+
 def insert_sentences(word, sentences):
-    conn_string = "host='localhost' dbname='postgres' user='postgres' password='Post$123'"
+    conn_string = "dbname= 'postgres' user='sdadmin@postgre-psd' host='postgre-psd.postgres.database.azure.com' password='Post$123' port='5432' "
 
     con = psycopg2.connect(conn_string)
     curs = con.cursor()
