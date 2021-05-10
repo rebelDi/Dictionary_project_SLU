@@ -8,8 +8,13 @@ class Tokenizer:
     def get_sentences_from_corpus_txt(self, corpus):
         # tokenization! saved the trained model here
         # it's a pretrained model, turns words into tokens, we need tokens-sentences
-        tokenizer = nltk.data.load('tokenizers/punkt/' + self.language.lower() + '.pickle')
-
+        try:
+            tokenizer = nltk.data.load('tokenizers/punkt/' + self.language.lower() + '.pickle')
+        except:
+            nltk.download("punkt") # pretrained tokenizer
+            nltk.download("stopwords") # remove words like and, the, an, a, of
+            tokenizer = nltk.data.load('tokenizers/punkt/' + self.language.lower() + '.pickle')
+            
         # tokenize into sentences
         raw_sentences = tokenizer.tokenize(corpus) # make it array with separate sentences
         # print("Got " + str(len(raw_sentences)) + " sentences from corpus")
