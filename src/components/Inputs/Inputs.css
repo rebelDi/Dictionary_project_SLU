@@ -23,15 +23,16 @@
   margin-top: 5pt;
   height: 26pt;
   width: 25pt;
-}
+} 
 
 .part_of_speech_field {
+margin-right: 5pt; 
   margin-left: 5pt;
   background-color: rgb(225, 247, 220);
   width: 30%;
 }
 
-.language_select {
+.language_selector {
   width: 30%;
   margin-left: 5px;
   background-color: rgb(225, 247, 220);

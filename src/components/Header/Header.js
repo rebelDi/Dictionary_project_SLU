@@ -1,25 +1,36 @@
-import React, { Component } from "react";
+import React from "react";
 import "./Header.css";
 import { MenuItem, TextField } from "@material-ui/core";
-import languages from "../../data/languages";
+import uniqid from "uniqid";
 
-export default class Header extends Component {
-  render() {
+const Header = ({
+  t,
+  setLocale,
+  locale,
+  locales = ["en", "hi", "ru", "tr", "ua"],
+}) => {
+  {
     return (
-      <div>
+      <nav>
         <div className="language">
-          <TextField select value={"English"} size="small" variant="outlined">
-            {languages.map((item) => (
-              <MenuItem key={item.label} value={item.label}>
-                {item.value}
+          <TextField
+            id="outlined-basic"
+            select
+            value={locale}
+            onChange={(e) => setLocale(e.target.value)}
+          >
+            {locales.map((item) => (
+              <MenuItem key={uniqid()} value={item}>
+                {item}
               </MenuItem>
             ))}
           </TextField>
         </div>
         <div className="header">
-          {<span className="title">Dictionary</span>}
+          {<span className="title">{t("Dictionary")}</span>}
         </div>
-      </div>
+      </nav>
     );
   }
-}
+};
+export default Header;

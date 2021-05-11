@@ -26,7 +26,7 @@ const ListView = ({ meaning, t }) => {
   return (
     <div>
       <ListItem button key={uniqid()} onClick={handleClick}>
-        <ListItemText primary={t("Meaning") + meaning.id + ":"} />
+        <ListItemText primary={t("Meaning") + " "+ meaning.id + ":"} />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse key={uniqid()} in={open} timeout="auto" unmountOnExit>
