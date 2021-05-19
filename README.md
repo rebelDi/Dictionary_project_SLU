@@ -12,6 +12,10 @@ In Linux:
 In MacOs:
 ### `bash settings.sh`
 
+**Then execute the file `back end/nltk_settings.py`.
+Use this [link](https://drive.google.com/file/d/1nPQQ3PFBkpawA8AcZIh4Lgp14Rww2JFl/view?usp=sharing) to download trained models, then unarchive the zip and replace back end/trained folder with the folder in zip:
+
+
 ## This application needs two servers - for front end and api. In order to run api, go to the /Api directory of this project and run from the terminal:
 ### `npm start`
 ## Then open another terminal and go to the root directory of this project. Run from the terminal:
